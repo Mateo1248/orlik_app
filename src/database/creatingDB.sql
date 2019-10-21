@@ -23,12 +23,12 @@ create table pitches (
 create table reservations (
 	reservation_id int auto_increment not null primary key,
 	which_user varchar(50) not null,
-    which_playground int not null,
+    which_pitch int not null,
     reservation_date date not null,
     start_hour time not null,
     end_hour time not null,
-   	foreign key(which_user) references app_users(user_login),
-   	foreign key(which_playground) references playgrounds(playground_id));
+   	foreign key(which_user) references users(user_login),
+   	foreign key(which_pitch) references pitches(pitch_id));
 
 
 
