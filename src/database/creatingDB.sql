@@ -7,13 +7,13 @@ create database OrlikDB;
 use OrlikDB;
 
 
-create table app_users (
+create table users (
 	user_login varchar(50) not null primary key,
 	user_password varchar(50) not null);
 
-create table playgrounds (
-	playground_id int auto_increment not null primary key,
-	playground_name varchar(70) not null,
+create table pitches (
+	pitch_id int auto_increment not null primary key,
+	pitch_name varchar(70) not null,
 	latitude_1st smallint not null,
 	longitude_1st smallint not null,
     	latitude_2st int not null,
@@ -23,10 +23,10 @@ create table playgrounds (
 create table reservations (
 	reservation_id int auto_increment not null primary key,
 	which_user varchar(50) not null,
-    	which_playground int not null,
-    	reservation_date date not null,
-    	start_hour time not null,
-    	end_hour time not null,
+    which_playground int not null,
+    reservation_date date not null,
+    start_hour time not null,
+    end_hour time not null,
    	foreign key(which_user) references app_users(user_login),
    	foreign key(which_playground) references playgrounds(playground_id));
 
