@@ -15,13 +15,22 @@ public class UserService {
 
     @Transactional
     public void addUser(User user) {
-        this.userRepository.save(user);
-        //logika here, obsługa wyjątków
+        userRepository.save(user);
     }
 
     @Transactional
     public void removeUser(String userLogin) {
         this.userRepository.deleteById(userLogin);
+    }
+
+    @Transactional
+    public User getUser(String userLogin) {
+        try {
+            return userRepository.getOne(userLogin);
+        }
+        catch (UserNotFoundException e) {
+            throw new UserNotFoundException("User", "login", userLogin);
+        }
     }
 
 }

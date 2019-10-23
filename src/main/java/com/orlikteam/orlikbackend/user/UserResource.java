@@ -27,4 +27,9 @@ public class UserResource {
         userService.removeUser(userLogin);
     }
 
+    @GetMapping("/{userLogin}")
+    public User getUser(@PathVariable String userLogin) {
+        return userService.getUser(userLogin);
+    }
+
 }
