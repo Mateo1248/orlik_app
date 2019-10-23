@@ -3,6 +3,7 @@ package com.orlikteam.orlikbackend.user;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -26,15 +27,13 @@ public class UserService {
 
     @Transactional
     public User getUser(String userLogin) {
-        User tmpUser = userRepository.getOne(userLogin);
-        if(tmpUser==null) {
+        Optional<User> tmpUser = userRepository.findById(userLogin);
+        if(!tmpUser.isPresent()) {
             throw new UserNotFoundException();
         }
-        return tmpUser;
+        return tmpUser.get();
     }
 
 }
-
-
 
 //obługa w User i w UserResource adnotacjami valid, not blank

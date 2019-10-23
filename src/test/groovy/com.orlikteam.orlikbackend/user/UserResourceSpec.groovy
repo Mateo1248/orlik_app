@@ -1,6 +1,5 @@
 package com.orlikteam.orlikbackend.user
 
-import org.hibernate.Hibernate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
@@ -9,6 +8,7 @@ import spock.lang.Specification
 class UserResourceSpec extends  Specification {
 
     User user
+    Optional<User> tmpTester
     @Autowired
     UserResource userResource
 
@@ -27,9 +27,15 @@ class UserResourceSpec extends  Specification {
     def "should get user from db by userLogin"() {
         when:
             def tmp = userResource.addUser(user)
-            //Hibernate.initialize(tmp)
             def resultOfGet = userResource.getUser("login")
         then:
             resultOfGet.userPassword=="pswd"
+    }
+
+    def "should return not found exception"() {
+        when:
+            tmpTester = userResource.getUser("xxx")
+        then:
+            def e = thrown(UserNotFoundException)
     }
 }
