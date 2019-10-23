@@ -1,7 +1,12 @@
 package com.orlikteam.orlikbackend.user
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+import org.springframework.boot.autoconfigure.liquibase.DataSourceClosingSpringLiquibase
 import spock.lang.Specification
 import spock.lang.Subject
+
+import javax.sql.DataSource
 
 class UserServiceSpec extends Specification {
 
@@ -12,9 +17,10 @@ class UserServiceSpec extends Specification {
 
     def setup() {
         userService = new UserService();
-        user = new User();
-        user.userLogin= "login"
-        user.userPassword = "pswd"
+        //user = new User();
+        //user.userLogin = "login"
+        //user.userPassword = "pswd"
+        user = User().builder().userLogin("login").userPassword("pswd").build()
     }
 
     def "should add user to db"() {
@@ -40,3 +46,9 @@ class UserServiceSpec extends Specification {
             oneUser.userPassword=="pswd"
     }
 }
+
+
+/*
+1) błedy w teście o co caman
+2) czy test powinien pokazać jakiej obsługi jakich wyjątków brakuje ?
+ */

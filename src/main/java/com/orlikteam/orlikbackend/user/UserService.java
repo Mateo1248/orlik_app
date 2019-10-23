@@ -15,7 +15,18 @@ public class UserService {
 
     @Transactional
     public void addUser(User user) {
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        }
+        catch (UserNotFoundException e) { /*
+            1) co łapać, własne wyjątki czy wbudowane (custom)
+            2) czy łapać to w ten sposób że try i kilka catchy tutaj w serwisie
+            3) czy dobrze jest stworzony własny wyjątek
+            4) czy robić to na zasadzie @ControllerAdvice w @ResponseStatus
+
+            */
+
+        }
     }
 
     @Transactional
