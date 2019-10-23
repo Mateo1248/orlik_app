@@ -1,7 +1,7 @@
 package com.orlikteam.orlikbackend.reservation;
 
-import com.orlikteam.orlikbackend.pitch.Pitch;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -14,6 +14,7 @@ import java.time.Instant;
 @Table(name="reservations")
 public class Reservation {
     @Column(name="reservation_id")
+    @Id
         private Integer reservationId;
     @Column(name="which_user")
         private String whichUser;
