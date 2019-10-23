@@ -1,10 +1,7 @@
 package com.orlikteam.orlikbackend.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Email;
 
 @RestController
 @RequestMapping("/users")
@@ -18,8 +15,8 @@ public class UserResource {
     }
 
     @PostMapping
-    public void addUser(User user) {
-        userService.addUser(user);
+    public User addUser(User user) {
+        return userService.addUser(user);
     }
 
     @DeleteMapping("/{userLogin}")

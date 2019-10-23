@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class UserNotFoundException extends RuntimeException {
 
-    private String resourceName;
+    /*private String resourceName;
     private String fieldName;
     private Object fieldValue;
 
@@ -15,6 +15,6 @@ public class UserNotFoundException extends RuntimeException {
         this.resourceName = resourceName;
         this.fieldName = fieldName;
         this.fieldValue = fieldValue;
-    }
+    }*/
 
 }
