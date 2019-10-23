@@ -1,36 +1,35 @@
 package com.orlikteam.orlikbackend.user
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-import org.springframework.boot.autoconfigure.liquibase.DataSourceClosingSpringLiquibase
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
-import spock.lang.Subject
 
-import javax.sql.DataSource
-
+@SpringBootTest
 class UserServiceSpec extends Specification {
 
-    @Subject
     User user
+    @Autowired
     UserService userService
-    UserRepository userRepository = Mock()
+    @Autowired
+    UserRepository userRepository
 
     def setup() {
-        userService = new UserService();
-        //user = new User();
-        //user.userLogin = "login"
-        //user.userPassword = "pswd"
-        user = User().builder().userLogin("login").userPassword("pswd").build()
+        user = new User();
+        user.userLogin = "login"
+        user.userPassword = "pswd"
+        //user = User.builder().userLogin("login").userPassword("pswd").build()
     }
 
     def "should add user to db"() {
         when:
-            userService.addUser(user)
+        def result = userService.addUser(user)
         then:
-            1*userRepository.save(user)
+        result.userLogin == "login"
+        result.userPassword == "pswd"
     }
+}
 
-    def "should remove user from db"() {
+    /*def "should remove user from db"() {
         when:
             userService.removeUser(user.userLogin)
         then:
@@ -44,11 +43,17 @@ class UserServiceSpec extends Specification {
             def oneUser = userRepository.getOne(user.userLogin)
             oneUser.userLogin=="login"
             oneUser.userPassword=="pswd"
-    }
-}
+    }*/
+
 
 
 /*
 1) błedy w teście o co caman
 2) czy test powinien pokazać jakiej obsługi jakich wyjątków brakuje ?
+
+
+
+etc coś tam zmienić i tam dać etc javahome
+mock() do testowania serwisu
+do testowania resource - trzeba postawić kontekst
  */
