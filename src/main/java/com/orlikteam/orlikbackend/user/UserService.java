@@ -21,8 +21,11 @@ public class UserService {
 
     @Transactional
     public void removeUser(String userLogin) {
-        //spr czy delete to załatwia za nas
-        this.userRepository.deleteById(userLogin);
+        Optional<User> tmpUser = userRepository.findById(userLogin);
+        if(tmpUser.isPresent())
+            userRepository.deleteById(userLogin);
+        else
+            throw new UserNotFoundException();
     }
 
     @Transactional

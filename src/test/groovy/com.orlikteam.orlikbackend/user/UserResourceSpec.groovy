@@ -32,9 +32,28 @@ class UserResourceSpec extends  Specification {
             resultOfGet.userPassword=="pswd"
     }
 
-    def "should return not found exception"() {
+    // user with xxx login is not in db so thrown exception
+    def "should throw UserException exception"() {
         when:
             tmpTester = userResource.getUser("xxx")
+        then:
+            def e = thrown(UserNotFoundException)
+    }
+
+    //added user, removed and checked if he is db, thrown exception because he was removed
+    def "should remove user from db"() {
+        when:
+            def tmp = userResource.addUser(user)
+            userResource.removeUser("login")
+            tmpTester = userResource.getUser("login")
+        then:
+            def e = thrown(UserNotFoundException)
+    }
+
+    //user with S login is not in db, so thrown exception
+    def "should throw IllegalArgException"() {
+        when:
+            userResource.removeUser("S")
         then:
             def e = thrown(UserNotFoundException)
     }
