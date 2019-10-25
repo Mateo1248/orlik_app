@@ -30,13 +30,7 @@ public class UserService {
 
     @Transactional
     public User getUser(String userLogin) {
-        Optional<User> tmpUser = userRepository.findById(userLogin);
-        if(!tmpUser.isPresent()) {
-            throw new UserNotFoundException();
-        }
-        return tmpUser.get();
+        return userRepository.findById(userLogin).get();
     }
 
 }
-
-//obługa w User i w UserResource adnotacjami valid, not blank

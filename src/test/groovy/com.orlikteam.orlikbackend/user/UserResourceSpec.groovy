@@ -37,7 +37,7 @@ class UserResourceSpec extends  Specification {
         when:
             tmpTester = userResource.getUser("xxx")
         then:
-            def e = thrown(UserNotFoundException)
+            def e = thrown(NoSuchElementException)
     }
 
     //added user, removed and checked if he is db, thrown exception because he was removed
@@ -47,7 +47,7 @@ class UserResourceSpec extends  Specification {
             userResource.removeUser("login")
             tmpTester = userResource.getUser("login")
         then:
-            def e = thrown(UserNotFoundException)
+            def e = thrown(NoSuchElementException)
     }
 
     //user with S login is not in db, so thrown exception
