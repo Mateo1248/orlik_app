@@ -7,54 +7,59 @@ import spock.lang.Specification
 @SpringBootTest
 class UserResourceSpec extends  Specification {
 
-    User user
-    Optional<User> tmpTester
+    private User user1
+    private User user2
+    private User user3
+    private Optional<User> nonExistingUser
+
     @Autowired
     UserResource userResource
 
     def setup() {
-        user = User.builder().userLogin("login").userPassword("pswd").build()
+        user1 = User.builder().userLogin("login1").userPassword("pswd1").build()
+        user2 = User.builder().userLogin("login2").userPassword("pswd2").build()
+        user3 = User.builder().userLogin("login3").userPassword("pswd3").build()
     }
 
     def "should add user to db"() {
         when:
-            def resultOfAdd = userResource.addUser(user)
+            def createdUser = userResource.addUser(user1)
         then:
-            resultOfAdd.userLogin == "login"
-            resultOfAdd.userPassword == "pswd"
+            with (createdUser) {
+                userLogin == "login1"
+                userPassword == "pswd1"
+            }
     }
 
     def "should get user from db by userLogin"() {
         when:
-            def tmp = userResource.addUser(user)
-            def resultOfGet = userResource.getUser("login")
+            def addedToBeGot = userResource.addUser(user2) //must add user to have anybody to get
+            def takenUser = userResource.getUser("login2")
         then:
-            resultOfGet.userPassword=="pswd"
+            takenUser.userPassword=="pswd2"
     }
 
-    // user with xxx login is not in db so thrown exception
-    def "should throw UserException exception"() {
+    def "should throw exception due to attempt of getting non existing user"() {
         when:
-            tmpTester = userResource.getUser("xxx")
+            nonExistingUser = userResource.getUser("nonExistingLogin")
         then:
-            def e = thrown(NoSuchElementException)
+            thrown(UserNotFoundException)
     }
 
-    //added user, removed and checked if he is db, thrown exception because he was removed
     def "should remove user from db"() {
         when:
-            def tmp = userResource.addUser(user)
-            userResource.removeUser("login")
-            tmpTester = userResource.getUser("login")
+            def tmp = userResource.addUser(user3)
+            userResource.removeUser("login3")
+            def takenUserButNotExisting = userResource.getUser("login3")
         then:
-            def e = thrown(NoSuchElementException)
+            thrown(UserNotFoundException)
     }
 
-    //user with S login is not in db, so thrown exception
-    def "should throw IllegalArgException"() {
+    def "should throw UserNotFoundException while removing non existing user"() {
         when:
-            userResource.removeUser("S")
+            userResource.removeUser("nonExistingUser")
         then:
-            def e = thrown(UserNotFoundException)
+            thrown(UserNotFoundException)
     }
+
 }

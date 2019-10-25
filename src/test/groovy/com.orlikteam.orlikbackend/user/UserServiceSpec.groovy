@@ -1,67 +1,70 @@
 package com.orlikteam.orlikbackend.user
 
-import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
 
-@SpringBootTest
 class UserServiceSpec extends Specification {
 
-    User user
-    Optional<User> optionalUser
+    User user1
+    User user2
+    User user3
     private UserService userService
     private UserRepository userRepository
 
     def setup() {
         userRepository = Mock(UserRepository)
         userService = new UserService(userRepository)
-        user = User.builder().userLogin("login").userPassword("pswd").build()
+        user1 = User.builder().userLogin("login1").userPassword("pswd1").build()
+        user2 = User.builder().userLogin("login2").userPassword("pswd2").build()
+        user3 = User.builder().userLogin("login3").userPassword("pswd3").build()
     }
 
     def "should add user to db"() {
         given:
-            userRepository.save(user) >> user
+            userRepository.save(user1) >> user1
         when:
-            def resultOfAdd = userService.addUser(user)
+            def createdUser = userService.addUser(user1)
         then:
-            resultOfAdd.userLogin == "login"
-            resultOfAdd.userPassword == "pswd"
+        with (createdUser) {
+            userLogin == "login1"
+            userPassword == "pswd1"
+        }
     }
 
     def "should get one user"(){
         given:
-            userRepository.findById(user.userLogin) >> Optional.of(user)
+            userRepository.findById(user2.userLogin) >> Optional.of(user2)
         when:
-            def resultOfGet = userService.getUser(user.userLogin)
+            def takenUser = userService.getUser(user2.userLogin)
         then:
-            resultOfGet.userPassword=="pswd"
+            takenUser.userPassword=="pswd2"
     }
 
 
-    def "should not get one user - throw exception"() {
+    def "should throw exception due to attempt of getting non existing user"() {
         given:
-            userRepository.findById(user.userLogin) >> Optional.of(user)
+            userRepository.findById("nonExistingUser") >> Optional.empty()
         when:
-            def resultOfGet = userService.getUser("xxx")
+            def takenUser = userService.getUser("nonExistingUser")
         then:
-            def e = thrown(NullPointerException)
+            thrown(UserNotFoundException)
     }
 
     def "should remove user"() {
         given:
-            userRepository.findById(user.userLogin) >> Optional.of(user)
+            userRepository.findById(user3.userLogin) >> Optional.of(user3)
         when:
-            userService.removeUser(user.userLogin)
+            userService.removeUser(user3.userLogin)
         then:
-            1*userRepository.deleteById(user.userLogin)
+            1*userRepository.deleteById(user3.userLogin)
     }
 
-    def "should not remove one user - throw exception"() {
+    def "should throw exception while removing non existing user"() {
         given:
-            userRepository.findById(user.userLogin) >> Optional.of(user)
+            userRepository.findById("nonExistingUser") >> Optional.empty()
         when:
-            userService.removeUser("xxx")
+            userService.removeUser("nonExistingUser")
         then:
-            def e = thrown(NullPointerException)
+            thrown(UserNotFoundException)
     }
 
 }
