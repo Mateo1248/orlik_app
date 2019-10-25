@@ -22,8 +22,8 @@ public class Pitch {
     private String pitchName;
 
     @Column(name="latitude")
-    private Float latitude;
+    private Double latitude;
 
     @Column(name="longitude")
-    private Float longitude;
+    private Double longitude;
 }
