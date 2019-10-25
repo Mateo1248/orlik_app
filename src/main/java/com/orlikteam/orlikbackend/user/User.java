@@ -6,6 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
@@ -14,9 +17,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 public class User {
-    @Column(name="user_login")
+
     @Id
-        private String userLogin;
-    @Column(name="user_password")
-        private String userPassword;
+    @Column(name = "user_login")
+    @Email
+    private String login;
+
+    @Column(name = "user_password")
+    @NotBlank
+    private String password;
 }

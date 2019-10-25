@@ -1,5 +1,6 @@
 package com.orlikteam.orlikbackend.security;
 
+import com.orlikteam.orlikbackend.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
