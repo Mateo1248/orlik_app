@@ -20,8 +20,8 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> maybeUser = Optional.ofNullable(authRepository.findByLogin(username));
+        Optional<User> maybeUser = Optional.ofNullable(authRepository.findByUserLogin(username));
         User user = maybeUser.orElseThrow(() -> new UsernameNotFoundException(username));
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), Collections.emptyList());
+        return new org.springframework.security.core.userdetails.User(user.getUserLogin(), user.getUserPassword(), Collections.emptyList());
     }
 }

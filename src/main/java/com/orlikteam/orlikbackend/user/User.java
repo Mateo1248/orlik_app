@@ -21,9 +21,9 @@ public class User {
     @Id
     @Column(name = "user_login")
     @Email
-    private String login;
+    private String userLogin;
 
     @Column(name = "user_password")
     @NotBlank
-    private String password;
+    private String userPassword;
 }
