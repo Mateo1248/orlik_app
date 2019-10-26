@@ -21,19 +21,18 @@ public class UserService {
 
     @Transactional
     public void removeUser(String userLogin) {
-        Optional<User> tmpUser = userRepository.findById(userLogin);
-        if (tmpUser.isEmpty())
+        Optional<User> user = userRepository.findById(userLogin);
+        if (user.isEmpty())
             throw new UserNotFoundException();
         userRepository.deleteById(userLogin);
     }
 
     @Transactional
     public User getUser(String userLogin) {
-        //return userRepository.findById(userLogin).orElseThrow(UserNotFoundException::new);
-        Optional<User> tmpUser = userRepository.findById(userLogin);
-        if (tmpUser.isEmpty())
+        Optional<User> user = userRepository.findById(userLogin);
+        if (user.isEmpty())
             throw new UserNotFoundException();
-        return tmpUser.get();
+        return user.get();
     }
 
 }

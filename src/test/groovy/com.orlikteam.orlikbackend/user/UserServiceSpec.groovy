@@ -4,25 +4,22 @@ import spock.lang.Specification
 
 class UserServiceSpec extends Specification {
 
-    User user1
-    User user2
-    User user3
     private UserService userService
     private UserRepository userRepository
 
     def setup() {
         userRepository = Mock(UserRepository)
         userService = new UserService(userRepository)
-        user1 = User.builder().userLogin("login1").userPassword("pswd1").build()
-        user2 = User.builder().userLogin("login2").userPassword("pswd2").build()
-        user3 = User.builder().userLogin("login3").userPassword("pswd3").build()
     }
 
     def "should add user to db"() {
         given:
-            userRepository.save(user1) >> user1
+        def user = getUser("login1", "pswd1")
+        userRepository.save(user) >> user
+
         when:
-            def createdUser = userService.addUser(user1)
+        def createdUser = userService.addUser(user)
+
         then:
         with (createdUser) {
             userLogin == "login1"
@@ -32,39 +29,57 @@ class UserServiceSpec extends Specification {
 
     def "should get one user"(){
         given:
-            userRepository.findById(user2.userLogin) >> Optional.of(user2)
+        def user = getUser("login2", "pswd2")
+        userRepository.findById(user.userLogin) >> Optional.of(user)
+
         when:
-            def takenUser = userService.getUser(user2.userLogin)
+        def takenUser = userService.getUser(user.userLogin)
+
         then:
-            takenUser.userPassword=="pswd2"
+        takenUser.userPassword=="pswd2"
     }
 
 
     def "should throw exception due to attempt of getting non existing user"() {
         given:
-            userRepository.findById("nonExistingUser") >> Optional.empty()
+        userRepository.findById("nonExistingUser") >> Optional.empty()
+
         when:
-            def takenUser = userService.getUser("nonExistingUser")
+        userService.getUser("nonExistingUser")
+
         then:
-            thrown(UserNotFoundException)
+        thrown(UserNotFoundException)
     }
 
     def "should remove user"() {
         given:
-            userRepository.findById(user3.userLogin) >> Optional.of(user3)
+        def user = getUser("login3", "pswd3")
+        userRepository.findById(user.userLogin) >> Optional.of(user)
+
         when:
-            userService.removeUser(user3.userLogin)
+        userService.removeUser(user.userLogin)
+
         then:
-            1*userRepository.deleteById(user3.userLogin)
+        1*userRepository.deleteById(user.userLogin)
     }
 
     def "should throw exception while removing non existing user"() {
         given:
-            userRepository.findById("nonExistingUser") >> Optional.empty()
+        userRepository.findById("nonExistingUser") >> Optional.empty()
+
         when:
-            userService.removeUser("nonExistingUser")
+        userService.removeUser("nonExistingUser")
+
         then:
-            thrown(UserNotFoundException)
+        thrown(UserNotFoundException)
+    }
+
+    private static User getUser(String login, String password) {
+        return User
+                .builder()
+                .userLogin(login)
+                .userPassword(password)
+                .build()
     }
 
 }

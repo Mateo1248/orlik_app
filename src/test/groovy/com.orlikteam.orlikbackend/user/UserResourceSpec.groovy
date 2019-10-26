@@ -5,61 +5,72 @@ import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
 
 @SpringBootTest
-class UserResourceSpec extends  Specification {
-
-    private User user1
-    private User user2
-    private User user3
-    private Optional<User> nonExistingUser
+class UserResourceSpec extends Specification {
 
     @Autowired
     UserResource userResource
 
-    def setup() {
-        user1 = User.builder().userLogin("login1").userPassword("pswd1").build()
-        user2 = User.builder().userLogin("login2").userPassword("pswd2").build()
-        user3 = User.builder().userLogin("login3").userPassword("pswd3").build()
-    }
-
     def "should add user to db"() {
+        given:
+        def user = getUser("login1", "pswd1")
+
         when:
-            def createdUser = userResource.addUser(user1)
+        def createdUser = userResource.addUser(user)
+
         then:
-            with (createdUser) {
-                userLogin == "login1"
-                userPassword == "pswd1"
-            }
+        with(createdUser) {
+            userLogin == "login1"
+            userPassword == "pswd1"
+        }
     }
 
     def "should get user from db by userLogin"() {
+        given:
+        def user = getUser("login2", "pswd2")
+        userResource.addUser(user)
+
         when:
-            def addedToBeGot = userResource.addUser(user2) //must add user to have anybody to get
-            def takenUser = userResource.getUser("login2")
+        def takenUser = userResource.getUser("login2")
+
         then:
-            takenUser.userPassword=="pswd2"
+        takenUser.userPassword == "pswd2"
     }
 
     def "should throw exception due to attempt of getting non existing user"() {
         when:
-            nonExistingUser = userResource.getUser("nonExistingLogin")
+        userResource.getUser("nonExistingLogin")
+
         then:
-            thrown(UserNotFoundException)
+        thrown(UserNotFoundException)
     }
 
     def "should remove user from db"() {
+        given:
+        def user = getUser("login3", "pswd3")
+        userResource.addUser(user)
+
         when:
-            def tmp = userResource.addUser(user3)
-            userResource.removeUser("login3")
-            def takenUserButNotExisting = userResource.getUser("login3")
+        userResource.removeUser("login3")
+        userResource.getUser("login3")
+
         then:
-            thrown(UserNotFoundException)
+        thrown(UserNotFoundException)
     }
 
     def "should throw UserNotFoundException while removing non existing user"() {
         when:
-            userResource.removeUser("nonExistingUser")
+        userResource.removeUser("nonExistingUser")
+
         then:
-            thrown(UserNotFoundException)
+        thrown(UserNotFoundException)
+    }
+
+    private static User getUser(String login, String password) {
+        return User
+                .builder()
+                .userLogin(login)
+                .userPassword(password)
+                .build()
     }
 
 }
