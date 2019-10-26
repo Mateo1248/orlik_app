@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static com.orlikteam.orlikbackend.security.SecurityConstants.AUTH_URL;
+import static com.orlikteam.orlikbackend.security.SecurityConstants.CREATE_ACCOUNT;
 
 
 @Configuration
@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, AUTH_URL).permitAll()
+                .antMatchers(HttpMethod.POST, CREATE_ACCOUNT).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))

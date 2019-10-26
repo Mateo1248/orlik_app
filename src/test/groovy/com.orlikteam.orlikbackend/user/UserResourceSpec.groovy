@@ -20,7 +20,8 @@ class UserResourceSpec extends Specification {
         then:
         with(createdUser) {
             userLogin == "login1@test.com"
-            userPassword == "pswd1"
+            userPassword
+            userPassword != "pswd1"
         }
     }
 
@@ -33,7 +34,8 @@ class UserResourceSpec extends Specification {
         def takenUser = userResource.getUser("login2@test.com")
 
         then:
-        takenUser.userPassword == "pswd2"
+        takenUser.userPassword
+        takenUser.userPassword != "pswd2"
     }
 
     def "should throw exception due to attempt of getting non existing user"() {
