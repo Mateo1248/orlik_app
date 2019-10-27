@@ -12,8 +12,8 @@ public class UserExceptionHandler {
     @ExceptionHandler({UserNotFoundException.class})
     public void handleUserNotFoundException(UserNotFoundException e) {}
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler({UserAlreadyExistsException.class})
-    public void handleUserAlreadyInDBException(UserAlreadyExistsException e) {}
+    public void handleUserAlreadyExistsException(UserAlreadyExistsException e) {}
 
 }
