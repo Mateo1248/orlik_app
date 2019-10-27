@@ -10,6 +10,18 @@ class UserResourceSpec extends Specification {
     @Autowired
     UserResource userResource
 
+
+    def "should throw exception due to bad mail format"() {
+        given:
+        def user = getUser("notproperRegexOfMail", "pswd")
+
+        when:
+        def createdUserWithBadMail = userResource.addUser(user)
+
+        then:
+        thrown(UserBadMailException)
+    }
+
     def "should add user to db"() {
         given:
         def user = getUser("login1@test.com", "pswd1")
@@ -23,6 +35,18 @@ class UserResourceSpec extends Specification {
             userPassword
             userPassword != "pswd1"
         }
+    }
+
+    def "should throw exception due to already existing user with this login in db"() {
+        given:
+        def user = getUser("login11@gmail.com", "pswd1")
+        userResource.addUser(user)
+
+        when:
+        def createdUser = userResource.addUser(user)
+
+        then:
+        thrown(UserAlreadyInDBException)
     }
 
     def "should get user from db by userLogin"() {

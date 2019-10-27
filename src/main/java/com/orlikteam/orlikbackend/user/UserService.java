@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -16,6 +18,11 @@ public class UserService {
 
     @Transactional
     public User addUser(User user) {
+        if(!emailValidator(user.userLogin))
+            throw new UserBadMailException();
+        Optional<User> ifExistUser = userRepository.findById(user.userLogin);
+        if(ifExistUser.isPresent())
+            throw new UserAlreadyInDBException();
         return userRepository.save(user);
     }
 
@@ -33,6 +40,16 @@ public class UserService {
         if (user.isEmpty())
             throw new UserNotFoundException();
         return user.get();
+    }
+
+    public boolean emailValidator(String mail) {
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+");
+        Matcher matcher = pattern.matcher(mail);
+        if (matcher.find() && matcher.group().equals(mail)) {
+            return true;
+        }
+        else
+            return false;
     }
 
 }

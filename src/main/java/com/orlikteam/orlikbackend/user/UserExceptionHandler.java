@@ -12,4 +12,12 @@ public class UserExceptionHandler {
     @ExceptionHandler({UserNotFoundException.class})
     public void handleUserNotFoundException(UserNotFoundException e) {}
 
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler({UserBadMailException.class})
+    public void handleUserBadMailException(UserBadMailException e) {}
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @ExceptionHandler({UserAlreadyInDBException.class})
+    public void handleUserAlreadyInDBException(UserAlreadyInDBException e) {}
+
 }
