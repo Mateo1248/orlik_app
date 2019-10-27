@@ -1,5 +1,7 @@
 package com.orlikteam.orlikbackend.user;
 
+import com.orlikteam.orlikbackend.user.exception.UserAlreadyExistsException;
+import com.orlikteam.orlikbackend.user.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,6 +18,9 @@ public class UserService {
 
     @Transactional
     public User addUser(User user) {
+        Optional<User> maybeUser = userRepository.findById(user.getUserLogin());
+        if(maybeUser.isPresent())
+            throw new UserAlreadyExistsException();
         return userRepository.save(user);
     }
 
@@ -34,5 +39,6 @@ public class UserService {
             throw new UserNotFoundException();
         return user.get();
     }
+
 
 }

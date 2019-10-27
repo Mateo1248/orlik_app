@@ -1,5 +1,7 @@
 package com.orlikteam.orlikbackend.user
 
+import com.orlikteam.orlikbackend.user.exception.UserAlreadyExistsException
+import com.orlikteam.orlikbackend.user.exception.UserNotFoundException
 import spock.lang.Specification
 
 class UserServiceSpec extends Specification {
@@ -12,24 +14,39 @@ class UserServiceSpec extends Specification {
         userService = new UserService(userRepository)
     }
 
+
     def "should add user to db"() {
         given:
-        def user = getUser("login1", "pswd1")
+        def user = getUser("login1@gmail.com", "pswd1")
         userRepository.save(user) >> user
+        userRepository.findById(user.userLogin) >> Optional.empty()
 
         when:
         def createdUser = userService.addUser(user)
 
         then:
         with (createdUser) {
-            userLogin == "login1"
+            userLogin == "login1@gmail.com"
             userPassword == "pswd1"
         }
     }
 
-    def "should get one user"(){
+    def "should throw exception due to already existing user with this login in db"() {
         given:
-        def user = getUser("login2", "pswd2")
+        def user = getUser("login1@gmail.com", "pswd1")
+        userRepository.save(user) >> user
+        userRepository.findById(user.userLogin) >> Optional.of(user)
+
+        when:
+        userService.addUser(user)
+
+        then:
+        thrown(UserAlreadyExistsException)
+    }
+
+    def "should get one user"() {
+        given:
+        def user = getUser("login2@gmail.com", "pswd2")
         userRepository.findById(user.userLogin) >> Optional.of(user)
 
         when:
@@ -53,7 +70,7 @@ class UserServiceSpec extends Specification {
 
     def "should remove user"() {
         given:
-        def user = getUser("login3", "pswd3")
+        def user = getUser("login3@gmail.com", "pswd3")
         userRepository.findById(user.userLogin) >> Optional.of(user)
 
         when:
