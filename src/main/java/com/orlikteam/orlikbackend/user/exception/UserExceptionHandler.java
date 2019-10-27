@@ -1,7 +1,5 @@
 package com.orlikteam.orlikbackend.user.exception;
 
-import com.orlikteam.orlikbackend.user.exception.UserAlreadyExistsException;
-import com.orlikteam.orlikbackend.user.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
