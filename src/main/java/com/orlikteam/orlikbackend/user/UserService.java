@@ -33,12 +33,10 @@ public class UserService {
     }
 
     @Transactional
-    public User getUser(String userLogin) {
+    public String getUser(String userLogin) {
         Optional<User> user = userRepository.findById(userLogin);
         if (user.isEmpty())
             throw new UserNotFoundException();
-        return user.get();
+        return user.get().getUserLogin();
     }
-
-
 }

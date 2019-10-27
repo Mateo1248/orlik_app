@@ -1,5 +1,6 @@
 package com.orlikteam.orlikbackend.user;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +19,9 @@ public class UserResource {
     }
 
     @PostMapping
-    public User addUser(@RequestBody @Valid User user) {
+    public String addUser(@RequestBody @Valid User user) {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-        return userService.addUser(user);
+        return userService.addUser(user).getUserLogin();
     }
 
     @DeleteMapping("/{userLogin}")
@@ -29,7 +30,7 @@ public class UserResource {
     }
 
     @GetMapping("/{userLogin}")
-    public User getUser(@PathVariable String userLogin) {
+    public String getUser(@PathVariable String userLogin) {
         return userService.getUser(userLogin);
     }
 

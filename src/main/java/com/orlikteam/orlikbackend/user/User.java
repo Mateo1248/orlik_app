@@ -19,7 +19,7 @@ public class User {
 
     @Id
     @Column(name = "user_login")
-    @Email
+    @Email @NotBlank
     private String userLogin;
 
     @Column(name = "user_password")

@@ -1,5 +1,7 @@
-package com.orlikteam.orlikbackend.user
+package com.orlikteam.orlikbackend.user.unit
 
+import com.orlikteam.orlikbackend.user.User
+import com.orlikteam.orlikbackend.user.UserResource
 import com.orlikteam.orlikbackend.user.exception.UserAlreadyExistsException
 import com.orlikteam.orlikbackend.user.exception.UserNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,14 +32,10 @@ class UserResourceSpec extends Specification {
         def user = getUser("login1@test.com", "pswd1")
 
         when:
-        def createdUser = userResource.addUser(user)
+        def createdUserLogin = userResource.addUser(user)
 
         then:
-        with(createdUser) {
-            userLogin == "login1@test.com"
-            userPassword
-            userPassword != "pswd1"
-        }
+        createdUserLogin == "login1@test.com"
     }
 
     def "should throw exception due to already existing user with this login in db"() {
@@ -58,11 +56,10 @@ class UserResourceSpec extends Specification {
         userResource.addUser(user)
 
         when:
-        def takenUser = userResource.getUser("login2@test.com")
+        def takenUserLogin = userResource.getUser("login2@test.com")
 
         then:
-        takenUser.userPassword
-        takenUser.userPassword != "pswd2"
+        takenUserLogin == "login2@test.com"
     }
 
     def "should throw exception due to attempt of getting non existing user"() {

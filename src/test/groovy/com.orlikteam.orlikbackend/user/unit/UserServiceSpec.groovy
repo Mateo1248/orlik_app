@@ -1,5 +1,8 @@
-package com.orlikteam.orlikbackend.user
+package com.orlikteam.orlikbackend.user.unit
 
+import com.orlikteam.orlikbackend.user.User
+import com.orlikteam.orlikbackend.user.UserRepository
+import com.orlikteam.orlikbackend.user.UserService
 import com.orlikteam.orlikbackend.user.exception.UserAlreadyExistsException
 import com.orlikteam.orlikbackend.user.exception.UserNotFoundException
 import spock.lang.Specification
@@ -50,10 +53,10 @@ class UserServiceSpec extends Specification {
         userRepository.findById(user.userLogin) >> Optional.of(user)
 
         when:
-        def takenUser = userService.getUser(user.userLogin)
+        def takenUserLogin = userService.getUser(user.userLogin)
 
         then:
-        takenUser.userPassword=="pswd2"
+        takenUserLogin =="login2@gmail.com"
     }
 
 
@@ -77,7 +80,7 @@ class UserServiceSpec extends Specification {
         userService.removeUser(user.userLogin)
 
         then:
-        1*userRepository.deleteById(user.userLogin)
+        1 * userRepository.deleteById(user.userLogin)
     }
 
     def "should throw exception while removing non existing user"() {
