@@ -1,1 +1,8 @@
-
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://dborlik.cjmn080aizuq.us-east-2.rds.amazonaws.com/OrlikDB
+    username: orlikAdmin
+    password: AWSorlik1
+server:
+  port: 5000

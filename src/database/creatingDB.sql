@@ -9,7 +9,7 @@ use OrlikDB;
 
 create table users (
 	user_login varchar(50) not null primary key,
-	user_password varchar(50) not null);
+	user_password varchar(255) not null);
 
 create table pitches (
 	pitch_id int auto_increment not null primary key,
