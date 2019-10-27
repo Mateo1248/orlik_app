@@ -1,5 +1,7 @@
 package com.orlikteam.orlikbackend.user;
 
+import com.orlikteam.orlikbackend.user.exception.UserAlreadyExistsException;
+import com.orlikteam.orlikbackend.user.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,11 +20,9 @@ public class UserService {
 
     @Transactional
     public User addUser(User user) {
-        if(!emailValidator(user.userLogin))
-            throw new UserBadMailException();
-        Optional<User> ifExistUser = userRepository.findById(user.userLogin);
-        if(ifExistUser.isPresent())
-            throw new UserAlreadyInDBException();
+        Optional<User> maybeUser = userRepository.findById(user.getUserLogin());
+        if(maybeUser.isPresent())
+            throw new UserAlreadyExistsException();
         return userRepository.save(user);
     }
 
@@ -42,14 +42,5 @@ public class UserService {
         return user.get();
     }
 
-    public boolean emailValidator(String mail) {
-        Pattern pattern = Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+");
-        Matcher matcher = pattern.matcher(mail);
-        if (matcher.find() && matcher.group().equals(mail)) {
-            return true;
-        }
-        else
-            return false;
-    }
 
 }

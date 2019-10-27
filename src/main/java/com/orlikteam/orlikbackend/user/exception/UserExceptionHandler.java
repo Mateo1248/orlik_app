@@ -1,5 +1,7 @@
-package com.orlikteam.orlikbackend.user;
+package com.orlikteam.orlikbackend.user.exception;
 
+import com.orlikteam.orlikbackend.user.exception.UserAlreadyExistsException;
+import com.orlikteam.orlikbackend.user.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,12 +14,8 @@ public class UserExceptionHandler {
     @ExceptionHandler({UserNotFoundException.class})
     public void handleUserNotFoundException(UserNotFoundException e) {}
 
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    @ExceptionHandler({UserBadMailException.class})
-    public void handleUserBadMailException(UserBadMailException e) {}
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @ExceptionHandler({UserAlreadyInDBException.class})
-    public void handleUserAlreadyInDBException(UserAlreadyInDBException e) {}
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({UserAlreadyExistsException.class})
+    public void handleUserAlreadyInDBException(UserAlreadyExistsException e) {}
 
 }

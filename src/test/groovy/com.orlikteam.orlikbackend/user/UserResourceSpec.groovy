@@ -1,7 +1,10 @@
 package com.orlikteam.orlikbackend.user
 
+import com.orlikteam.orlikbackend.user.exception.UserAlreadyExistsException
+import com.orlikteam.orlikbackend.user.exception.UserNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.TransactionSystemException
 import spock.lang.Specification
 
 @SpringBootTest
@@ -16,10 +19,10 @@ class UserResourceSpec extends Specification {
         def user = getUser("notproperRegexOfMail", "pswd")
 
         when:
-        def createdUserWithBadMail = userResource.addUser(user)
+        userResource.addUser(user)
 
         then:
-        thrown(UserBadMailException)
+        thrown(TransactionSystemException)
     }
 
     def "should add user to db"() {
@@ -43,10 +46,10 @@ class UserResourceSpec extends Specification {
         userResource.addUser(user)
 
         when:
-        def createdUser = userResource.addUser(user)
+        userResource.addUser(user)
 
         then:
-        thrown(UserAlreadyInDBException)
+        thrown(UserAlreadyExistsException)
     }
 
     def "should get user from db by userLogin"() {

@@ -1,5 +1,7 @@
 package com.orlikteam.orlikbackend.user
 
+import com.orlikteam.orlikbackend.user.exception.UserAlreadyExistsException
+import com.orlikteam.orlikbackend.user.exception.UserNotFoundException
 import spock.lang.Specification
 
 class UserServiceSpec extends Specification {
@@ -12,17 +14,6 @@ class UserServiceSpec extends Specification {
         userService = new UserService(userRepository)
     }
 
-    def "should throw exception due to bad mail format"() {
-        given:
-        def user = getUser("notproperRegexOfMail", "pswd")
-        userRepository.save(user) >> user
-
-        when:
-        def createdUserWithBadMail = userService.addUser(user)
-
-        then:
-        thrown(UserBadMailException)
-    }
 
     def "should add user to db"() {
         given:
@@ -47,13 +38,13 @@ class UserServiceSpec extends Specification {
         userRepository.findById(user.userLogin) >> Optional.of(user)
 
         when:
-        def createdUser = userService.addUser(user)
+        userService.addUser(user)
 
         then:
-        thrown(UserAlreadyInDBException)
+        thrown(UserAlreadyExistsException)
     }
 
-    def "should get one user"(){
+    def "should get one user"() {
         given:
         def user = getUser("login2@gmail.com", "pswd2")
         userRepository.findById(user.userLogin) >> Optional.of(user)
