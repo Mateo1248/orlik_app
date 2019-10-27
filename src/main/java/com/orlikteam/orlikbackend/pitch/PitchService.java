@@ -1,11 +1,9 @@
 package com.orlikteam.orlikbackend.pitch;
 
-import com.orlikteam.orlikbackend.exception.DuplicateElementException;
-import com.orlikteam.orlikbackend.exception.NotFoundException;
+import com.orlikteam.orlikbackend.pitch.exception.PitchNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -27,7 +25,7 @@ public class PitchService {
         List<Pitch> pitches = pitchRepository.findAll();
 
         if(pitches.size() == 0)
-            throw new NotFoundException("Pitches not found.");
+            throw new PitchNotFoundException("Pitches not found.");
 
         return pitches;
     }
