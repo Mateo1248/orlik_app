@@ -1,5 +1,8 @@
-package com.orlikteam.orlikbackend.pitch
+package com.orlikteam.orlikbackend.pitch.unit
 
+import com.orlikteam.orlikbackend.pitch.Pitch
+import com.orlikteam.orlikbackend.pitch.PitchRepository
+import com.orlikteam.orlikbackend.pitch.PitchService
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
 
@@ -41,13 +44,13 @@ class PitchServiceSpec extends Specification {
         pitches.size() == 0
     }
 
-    private static Pitch getNewPitch(Integer id, String name, Double latitude, Double longtitude) {
+    private static Pitch getNewPitch(Integer id, String name, Double latitude, Double longitude) {
         return Pitch
                 .builder()
                 .pitchId(id)
                 .pitchName(name)
                 .latitude(latitude)
-                .longitude(longtitude)
+                .longitude(longitude)
                 .build()
     }
 }
