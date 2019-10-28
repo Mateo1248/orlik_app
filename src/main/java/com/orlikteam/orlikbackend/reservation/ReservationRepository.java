@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
-    Optional<List<Reservation>> findByWhichPitchAndReservationDate(Integer whichPitch, LocalDate reservationDate);
-    Optional<List<Reservation>> findByWhichPitchIsAndReservationDateIsAndStartHourBeforeAndEndHourAfter(Integer whichPitch, LocalDate reservationDate, LocalTime startHour, LocalTime endHour);
-    Optional<List<Reservation>> findByWhichPitchIsAndReservationDateIsAndStartHourBetween(Integer whichPitch, LocalDate reservationDate, LocalTime startHour, LocalTime endHour);
-    Optional<List<Reservation>> findByWhichPitchIsAndReservationDateIsAndEndHourBetween(Integer whichPitch, LocalDate reservationDate, LocalTime startHour, LocalTime endHour);
+    List<Reservation> findAllByWhichPitchAndReservationDate(Integer whichPitch, LocalDate reservationDate);
+    List<Reservation> findAllByWhichPitchIsAndReservationDateIsAndStartHourBeforeAndEndHourAfter(Integer whichPitch, LocalDate reservationDate, LocalTime startHour, LocalTime endHour);
+    List<Reservation> findAllByWhichPitchIsAndReservationDateIsAndStartHourBetween(Integer whichPitch, LocalDate reservationDate, LocalTime startHour, LocalTime endHour);
+    List<Reservation> findAllByWhichPitchIsAndReservationDateIsAndEndHourBetween(Integer whichPitch, LocalDate reservationDate, LocalTime startHour, LocalTime endHour);
 
 }

@@ -46,6 +46,7 @@ class PitchResourceSpec extends Specification {
 
     def "should return 200 with list of pitches when getting all pitches"() {
         given:
+        pitchRepository.deleteAll()
         pitchRepository.save(getNewPitch("Dembowskiego", 40, 50))
         pitchRepository.save(getNewPitch("Spoldzielcza", 50, 60))
 
