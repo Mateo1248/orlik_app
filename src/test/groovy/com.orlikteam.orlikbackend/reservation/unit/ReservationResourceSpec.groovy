@@ -3,7 +3,7 @@ package com.orlikteam.orlikbackend.reservation.unit
 import com.orlikteam.orlikbackend.reservation.Reservation
 import com.orlikteam.orlikbackend.reservation.ReservationResource
 import com.orlikteam.orlikbackend.reservation.exception.ReservationAlreadyExistsException
-import com.orlikteam.orlikbackend.reservation.exception.ReservationNotFoundException
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
@@ -14,7 +14,7 @@ import java.time.LocalTime
 class ReservationResourceSpec extends Specification {
 
     @Autowired
-    ReservationResource reservationResource
+    private ReservationResource reservationResource
 
     def "should add reservation" () {
         given:
@@ -111,7 +111,7 @@ class ReservationResourceSpec extends Specification {
         }
 
         when:
-        def listOfReservations = reservationResource.getReservationByPitchIdAndReservationDate(5, LocalDate.of(2020, 01, 01))
+        def listOfReservations = reservationResource.getReservationsByPitchIdAndReservationDate(5, LocalDate.of(2020, 01, 01))
 
         then:
         listOfReservations.size()==3
@@ -120,10 +120,10 @@ class ReservationResourceSpec extends Specification {
 
     def "should throw exception due to attempt of getting reservations from free of reservations day"() {
         when:
-        reservationResource.getReservationByPitchIdAndReservationDate(4, LocalDate.of(2019, 11, 13))
+        def listOfReservations = reservationResource.getReservationsByPitchIdAndReservationDate(4, LocalDate.of(2019, 11, 13))
 
         then:
-        thrown(ReservationNotFoundException)
+        listOfReservations.size()==0
     }
 
     private static Reservation getReservation(Integer id, String user, Integer pitch, LocalDate date, LocalTime startHour, LocalTime endHour) {

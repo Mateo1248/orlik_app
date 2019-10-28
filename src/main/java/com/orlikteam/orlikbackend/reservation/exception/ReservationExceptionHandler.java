@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ReservationExceptionHandler {
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({ReservationNotFoundException.class})
-    public void handleReservationNotFoundException(ReservationNotFoundException e) {}
-
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler({ReservationAlreadyExistsException.class})
     public void handleReservationAlreadyExistsException(ReservationAlreadyExistsException e) {}

@@ -4,7 +4,6 @@ import com.orlikteam.orlikbackend.reservation.Reservation
 import com.orlikteam.orlikbackend.reservation.ReservationRepository
 import com.orlikteam.orlikbackend.reservation.ReservationService
 import com.orlikteam.orlikbackend.reservation.exception.ReservationAlreadyExistsException
-import com.orlikteam.orlikbackend.reservation.exception.ReservationNotFoundException
 import spock.lang.Specification
 
 import java.time.LocalDate
@@ -60,10 +59,10 @@ class ReservationServiceSpec extends Specification {
         reservationRepository.findByWhichPitchAndReservationDate(5, LocalDate.of(2019, 10, 30)) >> Optional.empty()
 
         when:
-        reservationService.getReservationByPitchIdAndDate(5, LocalDate.of(2019, 10, 30))
+        def listOfReservations = reservationService.getReservationByPitchIdAndDate(5, LocalDate.of(2019, 10, 30))
 
         then:
-        thrown(ReservationNotFoundException)
+        listOfReservations.size()==0
     }
 
     def "should get all reservations from one day"() {

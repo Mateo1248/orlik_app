@@ -20,8 +20,8 @@ public class ReservationResource {
         return reservationService.addReservation(reservation).getReservationId();
     }
 
-    @GetMapping("/{whichPitch}/{reservationDate}")
-    public List<Reservation> getReservationByPitchIdAndReservationDate(@PathVariable Integer whichPitch, @PathVariable LocalDate reservationDate) {
+    @GetMapping("?whichPitch={whichPitch}&reservationDate={reservationDate}")
+    public List<Reservation> getReservationsByPitchIdAndReservationDate(@RequestParam Integer whichPitch, @RequestParam LocalDate reservationDate) {
         return reservationService.getReservationByPitchIdAndDate(whichPitch, reservationDate);
     }
 

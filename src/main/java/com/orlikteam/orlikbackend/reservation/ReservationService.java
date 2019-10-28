@@ -1,11 +1,11 @@
 package com.orlikteam.orlikbackend.reservation;
 
 import com.orlikteam.orlikbackend.reservation.exception.ReservationAlreadyExistsException;
-import com.orlikteam.orlikbackend.reservation.exception.ReservationNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,9 +34,8 @@ public class ReservationService {
 
     @Transactional
     public List<Reservation> getReservationByPitchIdAndDate(Integer whichPitch, LocalDate reservationDate) {
-        Optional<List<Reservation>> pitchReservations = reservationRepository.findByWhichPitchAndReservationDate(whichPitch, reservationDate);
-        if(pitchReservations.isEmpty())
-            throw new ReservationNotFoundException();
-        return pitchReservations.get();
+        if (reservationRepository.findByWhichPitchAndReservationDate(whichPitch, reservationDate).isPresent())
+            return reservationRepository.findByWhichPitchAndReservationDate(whichPitch, reservationDate).get();
+        return Collections.emptyList();
     }
 }

@@ -17,7 +17,6 @@ import java.time.LocalTime;
 public class Reservation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="reservation_id")
     @NotNull
     private Integer reservationId;
