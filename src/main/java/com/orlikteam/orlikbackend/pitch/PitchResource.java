@@ -20,7 +20,7 @@ public class PitchResource {
         pitchService.addPitch(pitch);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<Pitch> getAllPitches() {
         return pitchService.getAllPitches();
     }

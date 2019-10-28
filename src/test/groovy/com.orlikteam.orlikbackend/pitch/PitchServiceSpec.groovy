@@ -1,33 +1,23 @@
 package com.orlikteam.orlikbackend.pitch
 
-import com.orlikteam.orlikbackend.pitch.exception.PitchNotFoundException
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
 
 @SpringBootTest
 class PitchServiceSpec extends Specification {
 
-    @Mock
     private PitchRepository pitchRepository
-
     private PitchService pitchService
 
     def setup() {
+        pitchRepository = Mock(PitchRepository)
         pitchService = new PitchService(pitchRepository)
     }
 
-    def "check getAllPitches response for non empty list"() {
+    def "should return list with one pitch when getting all pitches"() {
         given: "table with one pitch in db"
-        def pitch = Pitch.builder()
-                .pitchId(1)
-                .pitchName("pitch")
-                .longitude(65.0)
-                .latitude(65.0)
-                .build()
-        Mockito.when(pitchRepository.findAll()).thenReturn(List.of(pitch))
+        def pitch = getNewPitch(1, "pitch", 65.0, 65.0)
+        pitchRepository.findAll() >> List.of(pitch)
 
         when: "user get list of pitches"
         def pitches = pitchService.getAllPitches()
@@ -40,11 +30,24 @@ class PitchServiceSpec extends Specification {
         pitches.get(0).getPitchName() == "pitch"
     }
 
-    def "check if getAllPitches throw exception for empty list"() {
-        given: "empty table from db"
+    def "should return empty list when getting all pitches"() {
+        given: "empty list of pitch"
+        pitchRepository.findAll() >> List.of()
+
         when: "user get empty list of pitches"
-            pitchService.getAllPitches()
+        def pitches = pitchService.getAllPitches()
+
         then: "exception should be thrown"
-            thrown(PitchNotFoundException)
+        pitches.size() == 0
+    }
+
+    private static Pitch getNewPitch(Integer id, String name, Double latitude, Double longtitude) {
+        return Pitch
+                .builder()
+                .pitchId(id)
+                .pitchName(name)
+                .latitude(latitude)
+                .longitude(longtitude)
+                .build()
     }
 }
