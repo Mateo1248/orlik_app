@@ -29,7 +29,7 @@ class ReservationResourceSpec extends Specification {
 
     def "should throw exception due to already existing reservation in the same time in db"() {
         given:
-        def reservation = getReservation(2, "root@gmail.com", 5, LocalDate.of(2019, 11, 12), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
+        def reservation = getReservation(2, "root@gmail.com", 5, LocalDate.of(2019, 11, 22), LocalTime.of(12, 00, 00), LocalTime.of(13, 00, 00))
         reservationResource.addReservation(reservation)
 
         when:
@@ -39,10 +39,10 @@ class ReservationResourceSpec extends Specification {
         thrown(ReservationAlreadyExistsException)
     }
 
-    /*def "should throw exception due to already existing reservation in covering time in db"() {
+    def "should throw exception due to already existing reservation in covering time in db - start in free time but end in already reserved"() {
         given:
-        def reservation = getReservation(2, "root@gmail.com", 5, LocalDate.of(2019, 11, 12), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
-        def conflictedReservation = getReservation(3, "root@gmail.com", 5, LocalDate.of(2019, 11, 12), LocalTime.of(13, 00, 00), LocalTime.of(14, 30, 00))
+        def reservation = getReservation(202, "root@gmail.com", 5, LocalDate.of(2021, 11, 12), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
+        def conflictedReservation = getReservation(3, "root@gmail.com", 5, LocalDate.of(2021, 11, 12), LocalTime.of(10, 00, 00), LocalTime.of(12, 30, 00))
         reservationResource.addReservation(reservation)
 
         when:
@@ -50,7 +50,46 @@ class ReservationResourceSpec extends Specification {
 
         then:
         thrown(ReservationAlreadyExistsException)
-    }*/
+    }
+
+    def "should throw exception due to already existing reservation in covering time in db - start and end in free time but with already done reservation inside"() {
+        given:
+        def reservation = getReservation(222, "root@gmail.com", 5, LocalDate.of(2022, 11, 12), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
+        def conflictedReservation = getReservation(333, "root@gmail.com", 5, LocalDate.of(2022, 11, 12), LocalTime.of(9, 00, 00), LocalTime.of(16, 30, 00))
+        reservationResource.addReservation(reservation)
+
+        when:
+        reservationResource.addReservation(conflictedReservation)
+
+        then:
+        thrown(ReservationAlreadyExistsException)
+    }
+
+    def "should throw exception due to already existing reservation in covering time in db - end in free time but start in already reserved"() {
+        given:
+        def reservation = getReservation(223, "root@gmail.com", 5, LocalDate.of(2023, 11, 12), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
+        def conflictedReservation = getReservation(334, "root@gmail.com", 5, LocalDate.of(2023, 11, 12), LocalTime.of(11, 30, 00), LocalTime.of(15, 30, 00))
+        reservationResource.addReservation(reservation)
+
+        when:
+        reservationResource.addReservation(conflictedReservation)
+
+        then:
+        thrown(ReservationAlreadyExistsException)
+    }
+
+    def "should throw exception due to already existing reservation in covering time in db - start and end during already done reservation"() {
+        given:
+        def reservation = getReservation(224, "root@gmail.com", 5, LocalDate.of(2024, 11, 12), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
+        def conflictedReservation = getReservation(335, "root@gmail.com", 5, LocalDate.of(2024, 11, 12), LocalTime.of(10, 00, 00), LocalTime.of(12, 30, 00))
+        reservationResource.addReservation(reservation)
+
+        when:
+        reservationResource.addReservation(conflictedReservation)
+
+        then:
+        thrown(ReservationAlreadyExistsException)
+    }
 
     def "should get all reservations from one day"() {
         given:

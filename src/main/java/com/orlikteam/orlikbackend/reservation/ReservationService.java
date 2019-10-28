@@ -20,8 +20,14 @@ public class ReservationService {
 
     @Transactional
     public Reservation addReservation(Reservation reservation) {
-        Optional<Reservation> maybeReservation = reservationRepository.findByWhichPitchAndReservationDateAndStartHourAndEndHour(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour());
-        if(maybeReservation.isPresent())
+        Optional<List<Reservation>> possibleExistingReservations1 = reservationRepository.findByWhichPitchIsAndReservationDateIsAndStartHourBeforeAndEndHourAfter(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour());
+        if(!possibleExistingReservations1.isEmpty())
+            throw new ReservationAlreadyExistsException();
+        Optional<List<Reservation>> possibleExistingReservations2 = reservationRepository.findByWhichPitchIsAndReservationDateIsAndStartHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour());
+        if(!possibleExistingReservations2.isEmpty())
+            throw new ReservationAlreadyExistsException();
+        Optional<List<Reservation>> possibleExistingReservations3 = reservationRepository.findByWhichPitchIsAndReservationDateIsAndEndHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour());
+        if(!possibleExistingReservations3.isEmpty())
             throw new ReservationAlreadyExistsException();
         return reservationRepository.save(reservation);
     }

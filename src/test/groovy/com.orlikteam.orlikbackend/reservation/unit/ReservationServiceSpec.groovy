@@ -21,10 +21,12 @@ class ReservationServiceSpec extends Specification {
     }
 
     def "should add reservation" () {
-       given:
-       def reservation = getReservation(1, "root@gmail.com", 5, LocalDate.of(2019, 12, 20), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
+        given:
+        def reservation = getReservation(1, "root@gmail.com", 5, LocalDate.of(2019, 12, 20), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
         reservationRepository.save(reservation) >> reservation
-        reservationRepository.findByWhichPitchAndReservationDateAndStartHourAndEndHour(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.empty()
+        reservationRepository.findByWhichPitchIsAndReservationDateIsAndStartHourBeforeAndEndHourAfter(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.empty()
+        reservationRepository.findByWhichPitchIsAndReservationDateIsAndEndHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.empty()
+        reservationRepository.findByWhichPitchIsAndReservationDateIsAndStartHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.empty()
 
         when:
         def createdReservation = reservationService.addReservation(reservation)
@@ -44,7 +46,7 @@ class ReservationServiceSpec extends Specification {
         given:
         def reservation = getReservation(1, "root@gmail.com", 5, LocalDate.of(2019, 12, 20), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
         reservationRepository.save(reservation) >> reservation
-        reservationRepository.findByWhichPitchAndReservationDateAndStartHourAndEndHour(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.of(reservation)
+        reservationRepository.findByWhichPitchIsAndReservationDateIsAndStartHourBeforeAndEndHourAfter(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.of(reservation)
 
         when:
         reservationService.addReservation(reservation)
