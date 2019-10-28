@@ -1,5 +1,7 @@
-package com.orlikteam.orlikbackend.pitch
+package com.orlikteam.orlikbackend.pitch.unit
 
+import com.orlikteam.orlikbackend.pitch.Pitch
+import com.orlikteam.orlikbackend.pitch.PitchResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
@@ -34,13 +36,13 @@ class PitchResourceSpec extends Specification {
         pitches.get(0).getPitchName() == "pitch"
     }
 
-    private static Pitch getNewPitch(Integer id, String name, Double latitude, Double longtitude) {
+    private static Pitch getNewPitch(Integer id, String name, Double latitude, Double longitude) {
         return Pitch
                 .builder()
                 .pitchId(id)
                 .pitchName(name)
                 .latitude(latitude)
-                .longitude(longtitude)
+                .longitude(longitude)
                 .build()
     }
 }
