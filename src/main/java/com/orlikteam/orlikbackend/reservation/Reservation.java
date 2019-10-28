@@ -2,12 +2,11 @@ package com.orlikteam.orlikbackend.reservation;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.Instant;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @Builder
@@ -18,8 +17,9 @@ import java.time.Instant;
 public class Reservation {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="reservation_id")
-    @NotBlank
+    @NotNull
     private Integer reservationId;
 
     @Column(name="which_user")
@@ -27,21 +27,21 @@ public class Reservation {
     private String whichUser;
 
     @Column(name="which_pitch")
-    @NotBlank
+    @NotNull
     private Integer whichPitch;
 
     @Column(name="reservation_date")
-    @NotBlank
-    private Instant reservationDate;
+    @NotNull
+    private LocalDate reservationDate;
 
     @Column(name="start_hour")
-    @NotBlank
-    private Instant startHour;
+    @NotNull
+    private LocalTime startHour;
 
     @Column(name="end_hour")
-    @NotBlank
-    private Instant endHour;
+    @NotNull
+    private LocalTime endHour;
 
-    //relations
+    //relations ?
 
 }

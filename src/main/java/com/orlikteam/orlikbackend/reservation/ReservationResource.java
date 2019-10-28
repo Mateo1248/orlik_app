@@ -2,7 +2,7 @@ package com.orlikteam.orlikbackend.reservation;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -16,13 +16,13 @@ public class ReservationResource {
     }
 
     @PostMapping
-    public void addReservation(Reservation reservation) {
-        reservationService.addReservation(reservation);
+    public Integer addReservation(Reservation reservation) {
+        return reservationService.addReservation(reservation).getReservationId();
     }
 
-    @GetMapping("/{pitchId}/{reservationDate}")
-    public List<Reservation> getReservationByPitchIdAndReservationDate(@PathVariable Integer pitchId, @PathVariable Instant reservationDate) {
-        return reservationService.getReservationByPitchIdAndDate(pitchId, reservationDate);
+    @GetMapping("/{whichPitch}/{reservationDate}")
+    public List<Reservation> getReservationByPitchIdAndReservationDate(@PathVariable Integer whichPitch, @PathVariable LocalDate reservationDate) {
+        return reservationService.getReservationByPitchIdAndDate(whichPitch, reservationDate);
     }
 
 }
