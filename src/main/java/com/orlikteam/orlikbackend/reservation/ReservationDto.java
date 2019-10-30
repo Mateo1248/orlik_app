@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ReservationDto {
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate reservationDate;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime startHour;

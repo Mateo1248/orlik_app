@@ -25,7 +25,7 @@ public class Reservation {
 
     @Column(name="reservation_date")
     @NotNull
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate reservationDate;
 
     @Column(name="start_hour")
