@@ -39,7 +39,7 @@ public class Reservation {
     private LocalTime endHour;
 
     @ManyToOne
-    @JoinColumn(name = "whichUser", referencedColumnName = "user_login")
+    @JoinColumn(name = "which_user", referencedColumnName = "user_login")
     private User whichUser;
 
     @ManyToOne
