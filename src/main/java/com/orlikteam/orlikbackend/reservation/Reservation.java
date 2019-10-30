@@ -1,9 +1,11 @@
 package com.orlikteam.orlikbackend.reservation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.orlikteam.orlikbackend.pitch.Pitch;
+import com.orlikteam.orlikbackend.user.User;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,29 +20,30 @@ public class Reservation {
 
     @Id
     @Column(name="reservation_id")
-    @NotNull
+    @GeneratedValue
     private Integer reservationId;
-
-    @Column(name="which_user")
-    @NotBlank
-    private String whichUser;
-
-    @Column(name="which_pitch")
-    @NotNull
-    private Integer whichPitch;
 
     @Column(name="reservation_date")
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate reservationDate;
 
     @Column(name="start_hour")
     @NotNull
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startHour;
 
     @Column(name="end_hour")
     @NotNull
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endHour;
 
-    //relations ?
+    @ManyToOne
+    @JoinColumn(name = "which_user", referencedColumnName = "user_login")
+    private User whichUser;
+
+    @ManyToOne
+    @JoinColumn(name = "which_pitch", referencedColumnName = "pitch_id")
+    private Pitch whichPitch;
 
 }

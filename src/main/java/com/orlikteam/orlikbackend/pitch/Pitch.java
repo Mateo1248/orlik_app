@@ -1,10 +1,12 @@
 package com.orlikteam.orlikbackend.pitch;
 
+import com.orlikteam.orlikbackend.reservation.Reservation;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,8 +16,8 @@ import javax.validation.constraints.NotNull;
 @Table(name="pitches")
 public class Pitch {
 
-    @Column(name="pitch_id")
     @Id
+    @Column(name="pitch_id")
     @GeneratedValue
     private Integer pitchId;
 
@@ -30,4 +32,8 @@ public class Pitch {
     @Column(name="longitude")
     @NotNull
     private Double longitude;
+
+    @Transient
+    @OneToMany(mappedBy = "which_pitch")
+    private List<Reservation> reservations;
 }

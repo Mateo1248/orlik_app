@@ -1,13 +1,12 @@
 package com.orlikteam.orlikbackend.user;
 
+import com.orlikteam.orlikbackend.reservation.Reservation;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Data
 @Builder
@@ -25,4 +24,8 @@ public class User {
     @Column(name = "user_password")
     @NotBlank
     private String userPassword;
+
+    @Transient
+    @OneToMany(mappedBy = "which_user")
+    private List<Reservation> reservations;
 }

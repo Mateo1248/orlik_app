@@ -16,16 +16,16 @@ class ReservationServiceSpec extends Specification {
 
     def setup() {
         reservationRepository = Mock(ReservationRepository)
-        reservationService = new ReservationService(reservationRepository)
+        reservationService = new ReservationService(reservationRepository, userRepository, pitchRepository)
     }
 
     def "should add reservation" () {
         given:
         def reservation = getReservation(1, "root@gmail.com", 5, LocalDate.of(2019, 12, 20), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
         reservationRepository.save(reservation) >> reservation
-        reservationRepository.findByWhichPitchIsAndReservationDateIsAndStartHourBeforeAndEndHourAfter(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.empty()
-        reservationRepository.findByWhichPitchIsAndReservationDateIsAndEndHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.empty()
-        reservationRepository.findByWhichPitchIsAndReservationDateIsAndStartHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.empty()
+        reservationRepository.findAllByWhichPitchAndReservationDateIsAndStartHourBeforeAndEndHourAfter(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Collections.emptyList()
+        reservationRepository.findAllByWhichPitchAndReservationDateIsAndEndHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Collections.emptyList()
+        reservationRepository.findAllByWhichPitchAndReservationDateIsAndStartHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Collections.emptyList()
 
         when:
         def createdReservation = reservationService.addReservation(reservation)
@@ -45,7 +45,9 @@ class ReservationServiceSpec extends Specification {
         given:
         def reservation = getReservation(1, "root@gmail.com", 5, LocalDate.of(2019, 12, 20), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
         reservationRepository.save(reservation) >> reservation
-        reservationRepository.findByWhichPitchIsAndReservationDateIsAndStartHourBeforeAndEndHourAfter(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> Optional.of(reservation)
+        reservationRepository.findAllByWhichPitchAndReservationDateIsAndStartHourBeforeAndEndHourAfter(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> List.of(reservation)
+        reservationRepository.findAllByWhichPitchAndReservationDateIsAndStartHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> List.of(reservation)
+        reservationRepository.findAllByWhichPitchAndReservationDateIsAndEndHourBetween(reservation.getWhichPitch(), reservation.getReservationDate(), reservation.getStartHour(), reservation.getEndHour()) >> List.of(reservation)
 
         when:
         reservationService.addReservation(reservation)
@@ -56,7 +58,7 @@ class ReservationServiceSpec extends Specification {
 
     def "should throw exception due to attempt of getting reservations from free of reservations day"() {
         given:
-        reservationRepository.findByWhichPitchAndReservationDate(5, LocalDate.of(2019, 10, 30)) >> Optional.empty()
+        reservationRepository.findAllByWhichPitchAndReservationDate(5, LocalDate.of(2019, 10, 30)) >> Collections.emptyList()
 
         when:
         def listOfReservations = reservationService.getReservationByPitchIdAndDate(5, LocalDate.of(2019, 10, 30))
@@ -76,7 +78,7 @@ class ReservationServiceSpec extends Specification {
         sampleReservations.add(reservation2)
         sampleReservations.add(reservation3)
         sampleReservations.add(reservation4)
-        reservationRepository.findByWhichPitchAndReservationDate(5, LocalDate.of(2020, 01, 01)) >> Optional.of(sampleReservations)
+        reservationRepository.findAllByWhichPitchAndReservationDate(5, LocalDate.of(2020, 01, 01)) >> sampleReservations
 
         when:
         def takenReservationList = reservationService.getReservationByPitchIdAndDate(5, LocalDate.of(2020, 01, 01))
@@ -85,7 +87,6 @@ class ReservationServiceSpec extends Specification {
         takenReservationList.size()==4
 
     }
-
 
     private static Reservation getReservation(Integer id, String user, Integer pitch, LocalDate date, LocalTime startHour, LocalTime endHour) {
         return Reservation
