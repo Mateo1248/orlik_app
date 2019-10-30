@@ -10,5 +10,5 @@ public class PitchExceptionHandlerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({PitchNotFoundException.class})
-    public void handleCustomerNotFoundException(PitchNotFoundException e) {}
+    public void handlePitchNotFoundException(PitchNotFoundException e) {}
 }
