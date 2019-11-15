@@ -11,4 +11,8 @@ public class ReservationExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler({ReservationAlreadyExistsException.class})
     public void handleReservationAlreadyExistsException(ReservationAlreadyExistsException e) {}
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler({ReservationNotFoundException.class})
+    public void handleReservationNotFoundException(ReservationNotFoundException e) {}
 }

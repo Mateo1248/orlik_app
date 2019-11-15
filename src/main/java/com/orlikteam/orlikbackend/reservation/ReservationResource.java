@@ -32,4 +32,10 @@ public class ReservationResource {
         return reservationService.getReservationByPitchIdAndDate(whichPitch, reservationDate);
     }
 
+    @DeleteMapping(value = "/{reservationId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelReservation(@PathVariable(value = "reservationId") int reservationId) {
+        reservationService.cancelReservation(reservationId);
+    }
+
 }
