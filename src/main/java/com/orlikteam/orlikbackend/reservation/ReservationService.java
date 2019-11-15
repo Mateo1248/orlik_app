@@ -23,25 +23,26 @@ public class ReservationService {
     private final PitchRepository pitchRepository;
 
     public ReservationService(ReservationRepository reservationRepository, UserRepository userRepository, PitchRepository pitchRepository) {
-        this.reservationRepository=reservationRepository;
+        this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
         this.pitchRepository = pitchRepository;
     }
 
     @Transactional
-    public Reservation addReservation(ReservationDto reservationDto) {
+    public ReservationIdDto addReservation(ReservationDto reservationDto) {
         User user = userRepository.findById(reservationDto.getWhichUser())
                 .orElseThrow(UserNotFoundException::new);
         Pitch pitch = pitchRepository.findById(reservationDto.getWhichPitch())
                 .orElseThrow(PitchNotFoundException::new);
         Reservation reservation = getBuiltReservation(reservationDto, user, pitch);
         checkReservationConflict(reservation);
-        return reservationRepository.save(reservation);
+        return getReservationResponseDtoOf(reservationRepository.save(reservation).getReservationId());
     }
 
     @Transactional
     public List<ReservationDto> getReservationByPitchIdAndDate(Integer whichPitch, LocalDate reservationDate) {
-        List<Reservation> reservations = reservationRepository.findAllByWhichPitchAndReservationDate(whichPitch, reservationDate);
+        var pitch = pitchRepository.findById(whichPitch).orElseThrow(PitchNotFoundException::new);
+        List<Reservation> reservations = reservationRepository.findAllByWhichPitchAndReservationDate(pitch.getPitchId(), reservationDate);
         return reservations.stream().map(this::getReservationDto).collect(Collectors.toList());
     }
 
@@ -97,6 +98,13 @@ public class ReservationService {
                 .endHour(reservation.getEndHour())
                 .whichPitch(reservation.getWhichPitch().getPitchId())
                 .whichUser(reservation.getWhichUser().getUserLogin())
+                .build();
+    }
+
+    private static ReservationIdDto getReservationResponseDtoOf(int reservationId) {
+        return ReservationIdDto
+                .builder()
+                .reservationId(reservationId)
                 .build();
     }
 }

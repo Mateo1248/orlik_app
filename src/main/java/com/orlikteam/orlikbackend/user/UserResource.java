@@ -1,5 +1,6 @@
 package com.orlikteam.orlikbackend.user;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class UserResource {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public String addUser(@RequestBody @Valid User user) {
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         return userService.addUser(user).getUserLogin();
