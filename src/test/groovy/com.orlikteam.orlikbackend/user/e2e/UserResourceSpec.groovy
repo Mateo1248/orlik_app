@@ -44,7 +44,7 @@ class UserResourceSpec extends Specification {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
     }
 
-    def "should return 200 when registering user properly"() {
+    def "should return 201 when registering user properly"() {
         given:
         performMockMvcDeleteRequest("/users/$TEST_LOGIN")
 
@@ -52,7 +52,7 @@ class UserResourceSpec extends Specification {
         def result = performMockMvcPostRequest("/users", userJson(TEST_LOGIN, TEST_PASSWORD))
 
         then:
-        result.andExpect(status().isOk())
+        result.andExpect(status().isCreated())
 
         cleanup:
         userRepository.deleteById(TEST_LOGIN)

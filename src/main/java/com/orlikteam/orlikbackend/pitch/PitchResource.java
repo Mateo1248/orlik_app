@@ -1,5 +1,6 @@
 package com.orlikteam.orlikbackend.pitch;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,8 +17,9 @@ public class PitchResource {
     }
 
     @PostMapping
-    public void addPitch(@RequestBody @Valid Pitch pitch) {
-        pitchService.addPitch(pitch);
+    @ResponseStatus(HttpStatus.CREATED)
+    public PitchResponseDto addPitch(@RequestBody @Valid Pitch pitch) {
+        return pitchService.addPitch(pitch);
     }
 
     @GetMapping

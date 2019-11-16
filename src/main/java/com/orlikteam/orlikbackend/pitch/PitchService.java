@@ -14,13 +14,20 @@ public class PitchService {
         this.pitchRepository = pitchRepository;
     }
 
-    @Transactional
-    public void addPitch(Pitch pitch) {
-        pitchRepository.save(pitch);
+    public PitchResponseDto addPitch(Pitch pitch) {
+        var createdPitch = pitchRepository.save(pitch);
+        return buildPitchResponseDto(createdPitch);
     }
 
-    @Transactional
     public List<Pitch> getAllPitches() {
         return pitchRepository.findAll();
+    }
+
+    private static PitchResponseDto buildPitchResponseDto(Pitch pitch) {
+        return PitchResponseDto
+                .builder()
+                .pitchId(pitch.getPitchId())
+                .pitchName(pitch.getPitchName())
+                .build();
     }
 }

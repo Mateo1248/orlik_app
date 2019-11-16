@@ -7,5 +7,8 @@ spring:
   jpa:
     hibernate:
       use-new-id-generator-mappings: false
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
 server:
   port: 5000

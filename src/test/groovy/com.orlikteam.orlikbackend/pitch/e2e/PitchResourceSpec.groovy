@@ -74,12 +74,12 @@ class PitchResourceSpec extends Specification {
         pitches.size() == 0
     }
 
-    def "should return 200 when adding pitch"() {
+    def "should return 201 when adding pitch"() {
         when:
         def result = performMockMvcPostRequest("/pitches", pitchJson(getNewPitch("Spoldzielcza", 40, 50)))
 
         then:
-        result.andExpect(status().isOk())
+        result.andExpect(status().isCreated())
     }
 
     @Unroll

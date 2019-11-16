@@ -1,6 +1,8 @@
 package com.orlikteam.orlikbackend.reservation;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,13 +21,14 @@ public class ReservationResource {
     }
 
     @PostMapping
-    public Integer addReservation(@RequestBody ReservationDto reservation) {
-        return reservationService.addReservation(reservation).getReservationId();
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReservationIdDto addReservation(@RequestBody @Validated ReservationDto reservation) {
+        return reservationService.addReservation(reservation);
     }
 
     @GetMapping
     public List<ReservationDto> getReservationsByPitchIdAndReservationDate(@RequestParam(value = "whichPitch") Integer whichPitch,
-                                                                        @RequestParam(value = "reservationDate") @DateTimeFormat(iso = DATE) LocalDate reservationDate) {
+                                                                           @RequestParam(value = "reservationDate") @DateTimeFormat(iso = DATE) LocalDate reservationDate) {
         return reservationService.getReservationByPitchIdAndDate(whichPitch, reservationDate);
     }
 
