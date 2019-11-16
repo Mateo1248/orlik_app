@@ -24,6 +24,7 @@ import java.time.LocalTime
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
@@ -150,6 +151,36 @@ class ReservationResourceSpec extends Specification {
         }
     }
 
+    def "should return 204 when cancelling reservation"() {
+        given:
+        reservationRepository.deleteAll()
+        def pitchId = getListOfPitches(performMockMvcGetRequest("/pitches")).first().getPitchId()
+        performMockMvcPostRequest("/reservations", buildReservationDtoJson(getNewReservationDto(LocalDate.of(2019, 11, 15), LocalTime.of(11, 00), LocalTime.of(12, 00), USER_LOGIN, pitchId)))
+        def reservationId = reservationRepository.findAll().first().getReservationId()
+
+        when:
+        def result = performMockMvcDeleteRequest("/reservations/${reservationId}")
+
+        then:
+        with(result) {
+            andExpect(status().isNoContent())
+        }
+    }
+
+    def "should return 404 when cancelling non existent reservation"() {
+        given:
+        reservationRepository.deleteAll()
+        def reservationId = -1
+
+        when:
+        def result = performMockMvcDeleteRequest("/reservations/${reservationId}")
+
+        then:
+        with(result) {
+            andExpect(status().isNotFound())
+        }
+    }
+
     private ResultActions performMockMvcGetRequest(String url) {
         return mockMvc.perform(get(url)
                 .accept("application/json"))
@@ -159,6 +190,11 @@ class ReservationResourceSpec extends Specification {
         return mockMvc.perform(post(url)
                 .contentType("application/json")
                 .content(body))
+    }
+
+    private ResultActions performMockMvcDeleteRequest(String url) {
+        return mockMvc.perform(delete(url)
+                .contentType("application/json"))
     }
 
     private static ReservationDto getNewReservationDto(LocalDate date, LocalTime startTime, LocalTime endTime, String user, int pitch) {

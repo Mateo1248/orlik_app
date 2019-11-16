@@ -7,6 +7,7 @@ import com.orlikteam.orlikbackend.reservation.ReservationRepository
 import com.orlikteam.orlikbackend.reservation.ReservationDto
 import com.orlikteam.orlikbackend.reservation.ReservationService
 import com.orlikteam.orlikbackend.reservation.exception.ReservationAlreadyExistsException
+import com.orlikteam.orlikbackend.reservation.exception.ReservationNotFoundException
 import com.orlikteam.orlikbackend.user.User
 import com.orlikteam.orlikbackend.user.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -86,6 +87,27 @@ class ReservationServiceSpec extends Specification {
         takenReservationList.size() == 2
     }
 
+    def "should cancel reservation when it exists"() {
+        given:
+        reservationRepository.deleteAll()
+        def reservation = buildReservationDto(TEST_EMAIL, PITCH_ID, LocalDate.of(2020, 01, 04), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
+        def createdReservation = reservationService.addReservation(reservation)
+
+        when:
+        reservationService.cancelReservation(createdReservation.reservationId)
+
+        then:
+        reservationRepository.findAll().size() == 0
+    }
+
+    def "should thrown ReservationNotFoundException when canceling non-existent reservation"() {
+        when:
+        reservationService.cancelReservation(-1)
+
+        then:
+        thrown(ReservationNotFoundException)
+    }
+
     private static ReservationDto buildReservationDto(String user, Integer pitch, LocalDate date, LocalTime startHour, LocalTime endHour) {
         return ReservationDto
                 .builder()
@@ -94,18 +116,6 @@ class ReservationServiceSpec extends Specification {
                 .reservationDate(date)
                 .startHour(startHour)
                 .endHour(endHour)
-                .build()
-    }
-
-    private static Reservation buildReservation(ReservationDto reservationRequestDto, int reservationId) {
-        return Reservation
-                .builder()
-                .reservationId(reservationId)
-                .whichPitch(buildPitch(reservationRequestDto.whichPitch))
-                .whichUser(buildUser(reservationRequestDto.whichUser, TEST_PASSWORD))
-                .endHour(reservationRequestDto.endHour)
-                .startHour(reservationRequestDto.startHour)
-                .reservationDate(reservationRequestDto.reservationDate)
                 .build()
     }
 

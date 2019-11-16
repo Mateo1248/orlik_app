@@ -4,6 +4,7 @@ import com.orlikteam.orlikbackend.pitch.Pitch;
 import com.orlikteam.orlikbackend.pitch.exception.PitchNotFoundException;
 import com.orlikteam.orlikbackend.pitch.PitchRepository;
 import com.orlikteam.orlikbackend.reservation.exception.ReservationAlreadyExistsException;
+import com.orlikteam.orlikbackend.reservation.exception.ReservationNotFoundException;
 import com.orlikteam.orlikbackend.user.User;
 import com.orlikteam.orlikbackend.user.UserRepository;
 import com.orlikteam.orlikbackend.user.exception.UserNotFoundException;
@@ -106,5 +107,11 @@ public class ReservationService {
                 .builder()
                 .reservationId(reservationId)
                 .build();
+    }
+
+    public void cancelReservation(int reservationId) {
+        var reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(ReservationNotFoundException::new);
+        reservationRepository.deleteById(reservation.getReservationId());
     }
 }
