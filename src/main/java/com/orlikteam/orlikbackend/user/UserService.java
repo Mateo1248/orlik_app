@@ -16,15 +16,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    @Transactional
-    public User addUser(User user) {
-        Optional<User> maybeUser = userRepository.findById(user.getUserLogin());
+    public UserLoginDto addUser(UserDto userDto) {
+        Optional<User> maybeUser = userRepository.findById(userDto.getUserLogin());
         if(maybeUser.isPresent())
             throw new UserAlreadyExistsException();
-        return userRepository.save(user);
+        User user = getBuiltUser(userDto);
+        return getUserResponseDtoOf(userRepository.save(user).getUserLogin());
     }
 
-    @Transactional
     public void removeUser(String userLogin) {
         Optional<User> user = userRepository.findById(userLogin);
         if (user.isEmpty())
@@ -32,11 +31,35 @@ public class UserService {
         userRepository.deleteById(userLogin);
     }
 
-    @Transactional
     public String getUser(String userLogin) {
         Optional<User> user = userRepository.findById(userLogin);
         if (user.isEmpty())
             throw new UserNotFoundException();
         return user.get().getUserLogin();
     }
+
+    public void updateUser(String userLogin, String newPassword) {
+        Optional<User> user = userRepository.findById(userLogin);
+        if (user.isEmpty())
+            throw new UserNotFoundException();
+        userRepository.updateUserPassword(userLogin, newPassword);
+    }
+
+
+    private static UserLoginDto getUserResponseDtoOf(String userLogin){
+        return UserLoginDto
+                .builder()
+                .userLogin(userLogin)
+                .build();
+    }
+
+    private User getBuiltUser(UserDto userDto) {
+        return User
+                .builder()
+                .userLogin(userDto.getUserLogin())
+                .userPassword(userDto.getUserPassword())
+                .build();
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.orlikteam.orlikbackend.user.e2e
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.orlikteam.orlikbackend.user.User
+import com.orlikteam.orlikbackend.user.UserDto
 import com.orlikteam.orlikbackend.user.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -16,9 +17,12 @@ import spock.lang.Unroll
 
 import javax.servlet.Filter
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
@@ -142,8 +146,32 @@ class UserResourceSpec extends Specification {
         result.andExpect(status().isNotFound())
     }
 
+    def "should return 404 when updating non existing user"() {
+        when:
+        def result = performMockMvcUpdateRequest("/users", userJson("user@toUpdate.com", TEST_PASSWORD))
+
+        then:
+        result.andExpect(status().isNotFound())
+    }
+
+    def "should return 200 when properly updating an user"() {
+        given:
+        performMockMvcPostRequest("/users", userJson(TEST_LOGIN, TEST_PASSWORD))
+
+        when:
+        def result = performMockMvcUpdateRequest("/users", userJson(TEST_LOGIN, "newPswd"))
+
+        then:
+        result.andExpect(status().isOk())
+
+        cleanup:
+        performMockMvcDeleteRequest("/users/$TEST_LOGIN")
+    }
+
+
+
     private static String userJson(String login, String password) {
-        def user = User.builder().userLogin(login).userPassword(password).build()
+        def user = UserDto.builder().userLogin(login).userPassword(password).build()
         def mapper = new ObjectMapper()
         mapper.writeValueAsString(user)
     }
@@ -161,4 +189,27 @@ class UserResourceSpec extends Specification {
     private ResultActions performMockMvcGetRequest(String url) {
         return mockMvc.perform(get(url))
     }
+
+    private ResultActions performMockMvcUpdateRequest(String url, String body) {
+        return mockMvc.perform(put(url)
+                .contentType("application/json")
+                .content(body))
+    }
+
+    /*private static UserDto buildUserDto(String login, String password) {
+        return UserDto
+                .builder()
+                .userLogin(login)
+                .userPassword(password)
+                .build()
+    }
+
+    private static String buildUserDtoJson(UserDto userDto) {
+        return """
+        {
+            "userLogin": "${userDto.userLogin}",
+            "userPassword": "${userDto.userPassword}",
+        }
+        """.stripIndent()
+    }*/
 }
