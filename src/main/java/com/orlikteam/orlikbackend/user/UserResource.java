@@ -37,7 +37,7 @@ public class UserResource {
         return userService.getUser(userLogin);
     }
 
-    @PutMapping("/(userLogin}")
-    public void updateUser(@PathVariable String userLogin, String newPassword) { userService.updateUser(userLogin, newPassword); }
+    @PutMapping
+    public void updateUser(@RequestParam(value="userLogin") String userLogin, @RequestParam(value="newPassword") String newPassword) { userService.updateUser(userLogin, newPassword); }
 
 }

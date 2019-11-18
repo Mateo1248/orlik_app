@@ -148,7 +148,7 @@ class UserResourceSpec extends Specification {
 
     def "should return 404 when updating non existing user"() {
         when:
-        def result = performMockMvcUpdateRequest("/users", userJson("user@toUpdate.com", TEST_PASSWORD))
+        def result = performMockMvcUpdateRequest("/users?userLogin=${"user@toUpdate.com"}&newPassword=${TEST_PASSWORD}")
 
         then:
         result.andExpect(status().isNotFound())
@@ -159,7 +159,7 @@ class UserResourceSpec extends Specification {
         performMockMvcPostRequest("/users", userJson(TEST_LOGIN, TEST_PASSWORD))
 
         when:
-        def result = performMockMvcUpdateRequest("/users", userJson(TEST_LOGIN, "newPswd"))
+        def result = performMockMvcUpdateRequest("/users?userLogin=${TEST_LOGIN}&newPassword=${"newPswd"}")
 
         then:
         result.andExpect(status().isOk())
@@ -190,10 +190,9 @@ class UserResourceSpec extends Specification {
         return mockMvc.perform(get(url))
     }
 
-    private ResultActions performMockMvcUpdateRequest(String url, String body) {
-        return mockMvc.perform(put(url)
-                .contentType("application/json")
-                .content(body))
+    private ResultActions performMockMvcUpdateRequest(String url) {
+        return mockMvc.perform(patch(url))
+
     }
 
     /*private static UserDto buildUserDto(String login, String password) {
