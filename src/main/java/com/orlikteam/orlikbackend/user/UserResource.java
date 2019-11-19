@@ -37,7 +37,8 @@ public class UserResource {
         return userService.getUser(userLogin);
     }
 
-    @PutMapping
+    @PatchMapping
+    @ResponseStatus(HttpStatus.OK)
     public void updateUser(@RequestParam(value="userLogin") String userLogin, @RequestParam(value="newPassword") String newPassword) { userService.updateUser(userLogin, newPassword); }
 
 }

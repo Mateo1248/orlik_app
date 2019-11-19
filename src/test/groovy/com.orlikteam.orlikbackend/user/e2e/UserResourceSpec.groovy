@@ -157,9 +157,10 @@ class UserResourceSpec extends Specification {
     def "should return 200 when properly updating an user"() {
         given:
         performMockMvcPostRequest("/users", userJson(TEST_LOGIN, TEST_PASSWORD))
+        newPassword = "newPassword"
 
         when:
-        def result = performMockMvcUpdateRequest("/users?userLogin=${TEST_LOGIN}&newPassword=${"newPswd"}")
+        def result = performMockMvcUpdateRequest("/users?userLogin=${TEST_LOGIN}&newPassword=${"updatedPassword"}")
 
         then:
         result.andExpect(status().isOk())
