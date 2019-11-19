@@ -6,6 +6,7 @@ import com.orlikteam.orlikbackend.user.UserDto
 import com.orlikteam.orlikbackend.user.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -148,7 +149,7 @@ class UserResourceSpec extends Specification {
 
     def "should return 404 when updating non existing user"() {
         when:
-        def result = performMockMvcUpdateRequest("/users?userLogin=${"user@toUpdate.com"}&newPassword=${TEST_PASSWORD}")
+        def result = performMockMvcUpdateRequest("/users", userJson(TEST_LOGIN, TEST_PASSWORD))
 
         then:
         result.andExpect(status().isNotFound())
@@ -157,10 +158,10 @@ class UserResourceSpec extends Specification {
     def "should return 200 when properly updating an user"() {
         given:
         performMockMvcPostRequest("/users", userJson(TEST_LOGIN, TEST_PASSWORD))
-        newPassword = "newPassword"
+        def newPassword = "newPassword"
 
         when:
-        def result = performMockMvcUpdateRequest("/users?userLogin=${TEST_LOGIN}&newPassword=${"updatedPassword"}")
+        def result = performMockMvcUpdateRequest("/users", userJson(TEST_LOGIN, newPassword))
 
         then:
         result.andExpect(status().isOk())
@@ -191,9 +192,10 @@ class UserResourceSpec extends Specification {
         return mockMvc.perform(get(url))
     }
 
-    private ResultActions performMockMvcUpdateRequest(String url) {
-        return mockMvc.perform(patch(url))
-
+    private ResultActions performMockMvcUpdateRequest(String url, String body) {
+        return mockMvc.perform(patch(url)
+                .contentType("application/json")
+                .content(body))
     }
 
     /*private static UserDto buildUserDto(String login, String password) {

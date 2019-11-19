@@ -7,6 +7,7 @@ import com.orlikteam.orlikbackend.pitch.PitchRepository
 import com.orlikteam.orlikbackend.user.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -40,6 +41,7 @@ class PitchResourceSpec extends Specification {
     private ObjectMapper mapper
 
     def setup() {
+        pitchRepository.deleteAll()
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
         mapper = new ObjectMapper()
     }

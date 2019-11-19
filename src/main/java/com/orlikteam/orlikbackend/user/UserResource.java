@@ -39,6 +39,9 @@ public class UserResource {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public void updateUser(@RequestParam(value="userLogin") String userLogin, @RequestParam(value="newPassword") String newPassword) { userService.updateUser(userLogin, newPassword); }
+    public void updateUser(@RequestBody @Validated UserDto user) {
+        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+        userService.updateUser(user);
+    }
 
 }

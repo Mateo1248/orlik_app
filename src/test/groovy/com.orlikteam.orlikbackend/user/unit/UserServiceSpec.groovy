@@ -103,10 +103,10 @@ class UserServiceSpec extends Specification {
         userRepository.findById(user.userLogin) >> Optional.of(user)
 
         when:
-        userService.updateUser("login3@gmail.com", "pswd4")
+        userService.updateUser(buildUserDto("login3@gmail.com", "pswd4"))
 
         then:
-        1 * userRepository.updateUserPassword("login3@gmail.com", "pswd4")
+        1 * userRepository.save(_)
     }
 
 
@@ -115,7 +115,7 @@ class UserServiceSpec extends Specification {
         userRepository.findById("nonExistingUser") >> Optional.empty()
 
         when:
-        userService.updateUser("nonExistingUser", "passwordForNonExistingUser")
+        userService.updateUser(buildUserDto("nonExistingUser", "passwordForNonExistingUser"))
 
         then:
         thrown(UserNotFoundException)

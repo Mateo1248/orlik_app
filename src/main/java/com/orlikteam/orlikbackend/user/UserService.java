@@ -38,11 +38,13 @@ public class UserService {
         return user.get().getUserLogin();
     }
 
-    public void updateUser(String userLogin, String newPassword) {
-        Optional<User> user = userRepository.findById(userLogin);
+    public void updateUser(UserDto userDto) {
+        Optional<User> user = userRepository.findById(userDto.getUserLogin());
         if (user.isEmpty())
             throw new UserNotFoundException();
-        userRepository.updateUserPassword(userLogin, newPassword);
+        User userToModify = user.get();
+        userToModify.setUserPassword(userDto.getUserPassword());
+        userRepository.save(userToModify);
     }
 
 
