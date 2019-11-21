@@ -50,7 +50,7 @@ public class ReservationService {
 
     @Transactional
     public List<ReservationDto> getReservationByWhichUser(String whichUser) {
-        User user = userRepository.findById(whichUser).orElseThrow(UserNotFoundException::new);
+        var user = userRepository.findById(whichUser).orElseThrow(UserNotFoundException::new);
         List<Reservation> userReservations = reservationRepository.findAllByWhichUser(user.getUserLogin());
         return userReservations.stream().map(this::getReservationDto).collect(Collectors.toList());
     }
