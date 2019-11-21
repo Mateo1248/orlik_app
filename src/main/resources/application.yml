@@ -1,19 +1,12 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://dborlik.cjmn080aizuq.us-east-2.rds.amazonaws.com/OrlikDB?serverTimezone=UTC&useLegacyDatetimeCode=false
+    url: jdbc:mysql://dborlik.cjmn080aizuq.us-east-2.rds.amazonaws.com/OrlikDB
     username: orlikAdmin
     password: AWSorlik1
   jpa:
-    properties:
-      hibertnate:
-        jdbc:
-          time_zone: UTC
     hibernate:
       use-new-id-generator-mappings: false
-      naming:
-            physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-            implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
   jackson:
     serialization:
       write_dates_as_timestamps: false

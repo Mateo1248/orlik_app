@@ -198,20 +198,4 @@ class UserResourceSpec extends Specification {
                 .content(body))
     }
 
-    /*private static UserDto buildUserDto(String login, String password) {
-        return UserDto
-                .builder()
-                .userLogin(login)
-                .userPassword(password)
-                .build()
-    }
-
-    private static String buildUserDtoJson(UserDto userDto) {
-        return """
-        {
-            "userLogin": "${userDto.userLogin}",
-            "userPassword": "${userDto.userPassword}",
-        }
-        """.stripIndent()
-    }*/
 }
