@@ -26,14 +26,14 @@ public class ReservationResource {
         return reservationService.addReservation(reservation);
     }
 
-    @GetMapping("/{whichPitch}/{reservationDate}")
-    public List<ReservationDto> getReservationsByPitchIdAndReservationDate(@PathVariable("whichPitch") Integer whichPitch,
-                                                                           @PathVariable("reservationDate") @DateTimeFormat(iso = DATE) LocalDate reservationDate) {
+    @GetMapping
+    public List<ReservationDto> getReservationsByPitchIdAndReservationDate(@RequestParam("whichPitch") Integer whichPitch,
+                                                                           @RequestParam("reservationDate") @DateTimeFormat(iso = DATE) LocalDate reservationDate) {
         return reservationService.getReservationByPitchIdAndDate(whichPitch, reservationDate);
     }
 
 
-    @GetMapping("/{whichUser}")
+    @GetMapping("/user/{whichUser}")
     public List<ReservationDto> getReservationByUserLogin(@PathVariable("whichUser") String whichUser) {
         return reservationService.getReservationByWhichUser(whichUser);
     }
