@@ -33,8 +33,8 @@ public class ReservationResource {
     }
 
 
-    @GetMapping("/user")
-    public List<ReservationDto> getReservationByUserLogin(@RequestParam("whichUser") String whichUser) {
+    @GetMapping("/users/{whichUser}")
+    public List<ReservationDto> getReservationByUserLogin(@PathVariable("whichUser") String whichUser) {
         return reservationService.getReservationByWhichUser(whichUser);
     }
 

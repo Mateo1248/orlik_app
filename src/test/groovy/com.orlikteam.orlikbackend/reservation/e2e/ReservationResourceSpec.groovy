@@ -189,7 +189,7 @@ class ReservationResourceSpec extends Specification {
         performMockMvcPostRequest("/reservations", buildReservationDtoJson(getNewReservationDto(date, LocalTime.of(11, 00), LocalTime.of(12, 00), USER_LOGIN, pitchId)))
 
         when:
-        def result = performMockMvcGetRequest("/reservations/user?whichUser=${USER_LOGIN}")
+        def result = performMockMvcGetRequest("/reservations/users/${USER_LOGIN}")
 
         then:
         with(result) {
@@ -199,7 +199,7 @@ class ReservationResourceSpec extends Specification {
 
     def "should return 404 when getting list of reservations for non-existent user"() {
         when:
-        def result = performMockMvcGetRequest("/reservations/user?whichUser=${NON_EXISTENT_USER_LOGIN}")
+        def result = performMockMvcGetRequest("/reservations/users/${NON_EXISTENT_USER_LOGIN}")
 
         then:
         with(result) {
