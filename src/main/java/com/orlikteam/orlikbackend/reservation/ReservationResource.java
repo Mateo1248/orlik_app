@@ -27,9 +27,15 @@ public class ReservationResource {
     }
 
     @GetMapping
-    public List<ReservationDto> getReservationsByPitchIdAndReservationDate(@RequestParam(value = "whichPitch") Integer whichPitch,
-                                                                           @RequestParam(value = "reservationDate") @DateTimeFormat(iso = DATE) LocalDate reservationDate) {
+    public List<ReservationDto> getReservationsByPitchIdAndReservationDate(@RequestParam("whichPitch") Integer whichPitch,
+                                                                           @RequestParam("reservationDate") @DateTimeFormat(iso = DATE) LocalDate reservationDate) {
         return reservationService.getReservationByPitchIdAndDate(whichPitch, reservationDate);
+    }
+
+
+    @GetMapping("/users/{whichUser}")
+    public List<ReservationDto> getReservationByUserLogin(@PathVariable("whichUser") String whichUser) {
+        return reservationService.getReservationByWhichUser(whichUser);
     }
 
     @DeleteMapping(value = "/{reservationId}")
@@ -37,5 +43,4 @@ public class ReservationResource {
     public void cancelReservation(@PathVariable(value = "reservationId") int reservationId) {
         reservationService.cancelReservation(reservationId);
     }
-
 }

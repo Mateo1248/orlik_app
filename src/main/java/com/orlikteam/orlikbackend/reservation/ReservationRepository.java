@@ -12,6 +12,9 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
+    @Query(value = "SELECT * FROM reservations WHERE which_user=?1", nativeQuery = true)
+    List<Reservation> findAllByWhichUser(String whichUser);
+
     @Query(value = "SELECT * FROM reservations WHERE which_pitch=?1 AND reservation_date=?2", nativeQuery = true)
     List<Reservation> findAllByWhichPitchAndReservationDate(Integer whichPitch, LocalDate reservationDate);
 
@@ -23,5 +26,4 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 
     @Query(value = "SELECT * FROM reservations WHERE which_pitch=?1 AND reservation_date=?2 AND end_hour BETWEEN ?3 AND ?4", nativeQuery = true)
     List<Reservation> findAllByWhichPitchAndReservationDateIsAndEndHourBetween(Integer whichPitch, LocalDate reservationDate, LocalTime startHour, LocalTime endHour);
-
 }

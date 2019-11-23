@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -45,6 +46,13 @@ public class ReservationService {
         var pitch = pitchRepository.findById(whichPitch).orElseThrow(PitchNotFoundException::new);
         List<Reservation> reservations = reservationRepository.findAllByWhichPitchAndReservationDate(pitch.getPitchId(), reservationDate);
         return reservations.stream().map(this::getReservationDto).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ReservationDto> getReservationByWhichUser(String whichUser) {
+        var user = userRepository.findById(whichUser).orElseThrow(UserNotFoundException::new);
+        List<Reservation> userReservations = reservationRepository.findAllByWhichUser(user.getUserLogin());
+        return userReservations.stream().map(this::getReservationDto).collect(Collectors.toList());
     }
 
     private void checkReservationConflict(Reservation reservation) {
