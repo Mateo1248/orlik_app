@@ -12,6 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ReservationDto {
 
+    private Integer reservationId;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate reservationDate;
     @JsonFormat(pattern = "HH:mm")

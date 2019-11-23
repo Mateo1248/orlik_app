@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -102,6 +101,7 @@ public class ReservationService {
     private ReservationDto getReservationDto(Reservation reservation) {
         return ReservationDto
                 .builder()
+                .reservationId(reservation.getReservationId())
                 .reservationDate(reservation.getReservationDate())
                 .startHour(reservation.getStartHour())
                 .endHour(reservation.getEndHour())

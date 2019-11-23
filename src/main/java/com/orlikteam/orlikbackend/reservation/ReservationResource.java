@@ -33,9 +33,9 @@ public class ReservationResource {
     }
 
 
-    @GetMapping("/users/{whichUser}")
-    public List<ReservationDto> getReservationByUserLogin(@PathVariable("whichUser") String whichUser) {
-        return reservationService.getReservationByWhichUser(whichUser);
+    @GetMapping("/users/{userLogin}")
+    public List<ReservationDto> getReservationByUserLogin(@PathVariable String userLogin) {
+        return reservationService.getReservationByWhichUser(userLogin);
     }
 
     @DeleteMapping(value = "/{reservationId}")
