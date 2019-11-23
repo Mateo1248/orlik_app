@@ -10,6 +10,7 @@ import com.orlikteam.orlikbackend.reservation.exception.ReservationAlreadyExists
 import com.orlikteam.orlikbackend.reservation.exception.ReservationNotFoundException
 import com.orlikteam.orlikbackend.user.User
 import com.orlikteam.orlikbackend.user.UserRepository
+import com.orlikteam.orlikbackend.user.exception.UserNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
@@ -23,6 +24,7 @@ import java.time.LocalTime
 class ReservationServiceSpec extends Specification {
 
     private static final String TEST_EMAIL = "root@gmail.com"
+    private static final String NON_EXISTENT_EMAIL = "rooter@gmail.com"
     private static final String TEST_PASSWORD = "test"
     private static final int PITCH_ID = 1
 
@@ -106,6 +108,26 @@ class ReservationServiceSpec extends Specification {
 
         then:
         thrown(ReservationNotFoundException)
+    }
+
+    def "should get user reservation"() {
+        given:
+        def reservation = buildReservationDto(TEST_EMAIL, PITCH_ID, LocalDate.of(2020, 01, 04), LocalTime.of(11, 00, 00), LocalTime.of(13, 30, 00))
+        reservationService.addReservation(reservation)
+
+        when:
+        def userReservations = reservationService.getReservationByWhichUser(TEST_EMAIL)
+
+        then:
+        userReservations.size() == 1
+    }
+
+    def "should throw UserNotFoundException when getting  reservation for non existing user"() {
+        when:
+        reservationService.getReservationByWhichUser(NON_EXISTENT_EMAIL)
+
+        then:
+        thrown(UserNotFoundException)
     }
 
     private static ReservationDto buildReservationDto(String user, Integer pitch, LocalDate date, LocalTime startHour, LocalTime endHour) {
