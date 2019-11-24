@@ -75,12 +75,41 @@ class RatingServiceSpec extends Specification {
         thrown(PitchNotFoundException)
     }
 
-    def buildRating(Integer id = null) {
+    def "should return average of ratings"() {
+        given:
+        ratingRepository.findAllByPitchId(buildPitch()) >> buildListOfRatings()
+
+        when:
+        def result = ratingService.getAverageRating(PITCH_ID)
+
+        then:
+        with (result) {
+            pitchId == PITCH_ID
+            averageRating == 3.5
+        }
+    }
+
+    def "should throw exception when getting average rating of non existent pitch"() {
+        when:
+        ratingService.getAverageRating(NON_EXISTENT_PITCH_ID)
+
+        then:
+        thrown(PitchNotFoundException)
+    }
+
+    def buildListOfRatings() {
+        return List.of(
+                buildRating(1, 3),
+                buildRating(2, 4)
+        )
+    }
+
+    def buildRating(Integer id = null, Integer value = 5) {
         return Rating.builder()
                 .ratingId(id)
                 .userId(buildUser())
                 .pitchId(buildPitch())
-                .value(5)
+                .value(value)
                 .build()
     }
 

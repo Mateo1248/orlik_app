@@ -3,6 +3,7 @@ package com.orlikteam.orlikbackend.rating.service;
 import com.orlikteam.orlikbackend.pitch.Pitch;
 import com.orlikteam.orlikbackend.pitch.PitchRepository;
 import com.orlikteam.orlikbackend.pitch.exception.PitchNotFoundException;
+import com.orlikteam.orlikbackend.rating.dto.RatingAverageDto;
 import com.orlikteam.orlikbackend.rating.dto.RatingRequestDto;
 import com.orlikteam.orlikbackend.rating.dto.RatingResponseDto;
 import com.orlikteam.orlikbackend.rating.entity.Rating;
@@ -11,6 +12,8 @@ import com.orlikteam.orlikbackend.user.User;
 import com.orlikteam.orlikbackend.user.UserRepository;
 import com.orlikteam.orlikbackend.user.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 public class RatingService {
@@ -30,6 +33,22 @@ public class RatingService {
         var user = getUser(ratingDto.getUserId());
         var rating = ratingRepository.save(buildRating(pitch, user, ratingDto.getValue()));
         return builtRatingResponse(rating);
+    }
+
+    public RatingAverageDto getAverageRating(Integer pitchId) {
+        var pitch = pitchRepository.findById(pitchId).orElseThrow(PitchNotFoundException::new);
+        var ratings = ratingRepository.findAllByPitchId(pitch);
+        var average = ratings
+                .stream()
+                .map(Rating::getValue)
+                .mapToInt(Integer::intValue)
+                .summaryStatistics()
+                .getAverage();
+        return buildRatingAverageDto(pitchId, average);
+    }
+
+    private RatingAverageDto buildRatingAverageDto(Integer pitchId, double average) {
+        return RatingAverageDto.builder().pitchId(pitchId).averageRating(average).build();
     }
 
     private RatingResponseDto builtRatingResponse(Rating rating) {

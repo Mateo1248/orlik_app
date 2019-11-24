@@ -18,6 +18,7 @@ import javax.servlet.Filter
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
@@ -42,6 +43,7 @@ class RatingResourceSpec extends Specification {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build()
         performMockMvcPostRequest("/users", buildUserJson(getNewUser(USER_LOGIN, "test")))
         performMockMvcPostRequest("/pitches", buildPitchJson(getNewPitch("Spoldzielcza", 40, 50)))
+        performMockMvcPostRequest("/pitches", buildPitchJson(getNewPitch("Robotnicza", 44, 50)))
     }
 
     def "should return 200 when rating pitch"() {
@@ -49,7 +51,7 @@ class RatingResourceSpec extends Specification {
         def pitchId = getListOfPitches(performMockMvcGetRequest("/pitches")).first().getPitchId()
 
         when:
-        def result = performMockMvcPostRequest("/com.orlikteam.orlikbackend.ratings", buildRatingRequestDtoJson(USER_LOGIN, pitchId, 5))
+        def result = performMockMvcPostRequest("/ratings", buildRatingRequestDtoJson(USER_LOGIN, pitchId, 5))
 
         then:
         with (result) {
@@ -62,7 +64,7 @@ class RatingResourceSpec extends Specification {
         def pitchId = getListOfPitches(performMockMvcGetRequest("/pitches")).first().getPitchId()
 
         when:
-        def result = performMockMvcPostRequest("/com.orlikteam.orlikbackend.ratings", buildRatingRequestDtoJson(USER_LOGIN, pitchId, 6))
+        def result = performMockMvcPostRequest("/ratings", buildRatingRequestDtoJson(USER_LOGIN, pitchId, 6))
 
         then:
         with (result) {
@@ -72,7 +74,7 @@ class RatingResourceSpec extends Specification {
 
     def "should return 404 when rating non existent pitch"() {
         when:
-        def result = performMockMvcPostRequest("/com.orlikteam.orlikbackend.ratings", buildRatingRequestDtoJson(USER_LOGIN, NON_EXISTENT_PITCH_ID, 5))
+        def result = performMockMvcPostRequest("/ratings", buildRatingRequestDtoJson(USER_LOGIN, NON_EXISTENT_PITCH_ID, 5))
 
         then:
         with (result) {
@@ -85,12 +87,38 @@ class RatingResourceSpec extends Specification {
         def pitchId = getListOfPitches(performMockMvcGetRequest("/pitches")).first().getPitchId()
 
         when:
-        def result = performMockMvcPostRequest("/com.orlikteam.orlikbackend.ratings", buildRatingRequestDtoJson(NON_EXISTENT_USER_LOGIN, pitchId, 5))
+        def result = performMockMvcPostRequest("/ratings", buildRatingRequestDtoJson(NON_EXISTENT_USER_LOGIN, pitchId, 5))
 
         then:
         with (result) {
             andExpect(status().isNotFound())
         }
+    }
+
+    def "should return 404 when getting average rating of non existent pitch"() {
+        when:
+        def result = performMockMvcGetRequest("/ratings?pitchId=${NON_EXISTENT_PITCH_ID}")
+
+        then:
+        result.andExpect(status().isNotFound())
+    }
+
+    def "should return 200 with rating average"() {
+        given:
+        def pitchId = getListOfPitches(performMockMvcGetRequest("/pitches")).get(1).getPitchId()
+        performMockMvcPostRequest("/ratings", buildRatingRequestDtoJson(USER_LOGIN, pitchId, 5))
+        performMockMvcPostRequest("/ratings", buildRatingRequestDtoJson(USER_LOGIN, pitchId, 4))
+        performMockMvcPostRequest("/ratings", buildRatingRequestDtoJson(USER_LOGIN, pitchId, 3))
+
+        when:
+        def result = performMockMvcGetRequest("/ratings?pitchId=${pitchId}")
+
+        then:
+        with (result) {
+            andExpect(status().isOk())
+            andExpect(jsonPath('$.averageRating').value(4.0))
+        }
+
     }
 
     private static String buildRatingRequestDtoJson(String user, int pitchId, int value) {
