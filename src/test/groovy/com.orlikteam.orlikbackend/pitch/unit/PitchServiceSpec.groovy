@@ -4,9 +4,11 @@ import com.orlikteam.orlikbackend.pitch.Pitch
 import com.orlikteam.orlikbackend.pitch.PitchRepository
 import com.orlikteam.orlikbackend.pitch.PitchService
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
 import spock.lang.Specification
 
 @SpringBootTest
+@DirtiesContext
 class PitchServiceSpec extends Specification {
 
     private PitchRepository pitchRepository

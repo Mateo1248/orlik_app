@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ContextConfiguration
 @WebAppConfiguration
+@DirtiesContext
 class ReservationResourceSpec extends Specification {
 
     private static final int NON_EXISTENT_PITCH_ID = -1

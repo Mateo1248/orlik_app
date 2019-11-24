@@ -1,5 +1,6 @@
 package com.orlikteam.orlikbackend.user;
 
+import com.orlikteam.orlikbackend.rating.entity.Rating;
 import com.orlikteam.orlikbackend.reservation.Reservation;
 import lombok.*;
 
@@ -28,4 +29,9 @@ public class User {
     @Transient
     @OneToMany(mappedBy = "which_user")
     private List<Reservation> reservations;
+
+    @Transient
+    @OneToMany(mappedBy = "user_id")
+    private List<Rating> ratings;
+
 }
