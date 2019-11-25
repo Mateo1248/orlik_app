@@ -82,6 +82,9 @@ public class PitchService {
     }
 
     private boolean pitchIsAvailableNow(Pitch pitch) {
+        if(pitch.getReservations() == null)
+            return true;
+
         LocalDate dateNow = LocalDate.now();
         LocalTime startTime = LocalTime.now();
         LocalTime endTime = startTime.plusHours(2);
