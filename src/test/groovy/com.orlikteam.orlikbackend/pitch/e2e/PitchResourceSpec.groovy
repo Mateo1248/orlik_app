@@ -4,10 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.orlikteam.orlikbackend.pitch.Pitch
 import com.orlikteam.orlikbackend.pitch.PitchRepository
-import com.orlikteam.orlikbackend.user.User
+import com.orlikteam.orlikbackend.reservation.Reservation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -76,14 +75,6 @@ class PitchResourceSpec extends Specification {
         pitches.size() == 0
     }
 
-    def "should return 201 when adding pitch"() {
-        when:
-        def result = performMockMvcPostRequest("/pitches", pitchJson(getNewPitch("Spoldzielcza", 40, 50)))
-
-        then:
-        result.andExpect(status().isCreated())
-    }
-
     @Unroll
     def "should return 400 when adding pitch with null #property"() {
         when:
@@ -99,12 +90,47 @@ class PitchResourceSpec extends Specification {
         "longitude" | "Spoldzielcza" | 40       | null
     }
 
+    def "should return 201 when adding pitch"() {
+        when:
+        def result = performMockMvcPostRequest("/pitches", pitchJson(getNewPitch("Spoldzielcza", 40, 50)))
+
+        then:
+        result.andExpect(status().isCreated())
+    }
+
+    def "should return 404 when getting nearest pitch"() {
+        given:
+        pitchRepository.deleteAll()
+
+        when:
+        def result = performMockMvcGetRequest("/pitches/nearest/39/50")
+
+        then:
+        result.andExpect(status().isNotFound())
+    }
+
+    def "should return 200 when getting nearest pitch"() {
+        given:
+        pitchRepository.deleteAll()
+        Pitch pitch1 = new Pitch(1, "Dembowskiego", 40.0, 50.0, new ArrayList<Reservation>())
+        Pitch pitch2 = new Pitch(2, "Spoldzielcza", 50.0, 60.0, new ArrayList<Reservation>())
+        pitchRepository.save(pitch1)
+        pitchRepository.save(pitch2)
+
+        when:
+        def result = performMockMvcGetRequest("/pitches/nearest/39/50")
+
+        then:
+        result.andExpect(status().isOk())
+    }
+
     private static Pitch getNewPitch(String name, Double latitude, Double longitude) {
         return Pitch
                 .builder()
                 .pitchName(name)
                 .latitude(latitude)
                 .longitude(longitude)
+                .reservations(new ArrayList<Reservation>())
                 .build()
     }
 
