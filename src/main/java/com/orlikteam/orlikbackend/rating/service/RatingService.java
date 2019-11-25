@@ -28,6 +28,12 @@ public class RatingService {
         this.ratingRepository = ratingRepository;
     }
 
+
+    /**
+     * method is used to add a new rate of pitch to app
+     * @param ratingDto is an object made from: pitchId, userId and value of rate
+     * @return object made from: ratingId, pitchId, userId and value as a response of properly added rate of pitch given from repository
+     */
     public RatingResponseDto addPitchRating(RatingRequestDto ratingDto) {
         var pitch = getPitch(ratingDto.getPitchId());
         var user = getUser(ratingDto.getUserId());
@@ -35,6 +41,13 @@ public class RatingService {
         return builtRatingResponse(rating);
     }
 
+
+    /**
+     * method is used to get an average rating of selected pitch
+     * @param pitchId is a pitch id from which we are eager to get average rating
+     * @throws @PitchNotFoundException
+     * @return pitch id and its average rating as a response given from repository
+     */
     public RatingAverageDto getAverageRating(Integer pitchId) {
         var pitch = pitchRepository.findById(pitchId).orElseThrow(PitchNotFoundException::new);
         var ratings = ratingRepository.findAllByPitchId(pitch);

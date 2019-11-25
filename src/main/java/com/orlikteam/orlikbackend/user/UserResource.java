@@ -24,8 +24,8 @@ public class UserResource {
     }
 
     /**
-     * method is used to send a POST request to database (to send object of user to service)
-     * @param user is a object made from given by user login and password (which is encoding here)
+     * method receives request for user creation, redirects the request to user service
+     * @param user is an object made from given by user login and password (which is encoding here)
      * @return login of already added user got from service
      */
     @PostMapping
@@ -36,7 +36,7 @@ public class UserResource {
     }
 
     /**
-     * method is used to send a DELETE request to database (to send login to service)
+     * method receives request for user deletion, redirects the request to user service
      * @param userLogin is a login of user who we are eager to delete from app
      */
     @DeleteMapping("/{userLogin}")
@@ -46,8 +46,9 @@ public class UserResource {
 
 
     /**
-     * method is used to send a GET request to database (to send login to service)
+     * method receives request for getting the user, redirects the request to user service
      * @param userLogin is a login of user who we are eager to get from app
+     * @return login of existing user got from service
      */
     @GetMapping("/{userLogin}")
     public String getUser(@PathVariable String userLogin) {
@@ -56,9 +57,8 @@ public class UserResource {
 
 
     /**
-     * method is used to send a PATCH request to database (to send object of user to service)
-     * @param user is a object of user made from currently logged user's login and new password (which is encoding here)
-     * @return login of user who already updated his password
+     * method receives request for user updating, redirects the request to user service
+     * @param user is an object of user made from currently logged user's login and new password (which is encoding here)
      */
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)

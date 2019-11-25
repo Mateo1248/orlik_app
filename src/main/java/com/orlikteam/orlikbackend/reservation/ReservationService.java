@@ -29,6 +29,15 @@ public class ReservationService {
         this.pitchRepository = pitchRepository;
     }
 
+
+    /**
+     * method is used to add a new reservation to app
+     * @param reservationDto is a object made from: date, start and end hours and chosen pitch given by user
+     * @throws @UserNotFoundException
+     * @throws @PitchNotFoundException
+     * @throws @ReservationAlreadyExistsException
+     * @return reservation id as a response of properly added reservation given from repository
+     */
     @Transactional
     public ReservationIdDto addReservation(ReservationDto reservationDto) {
         User user = userRepository.findById(reservationDto.getWhichUser())
@@ -40,6 +49,14 @@ public class ReservationService {
         return getReservationResponseDtoOf(reservationRepository.save(reservation).getReservationId());
     }
 
+
+    /**
+     * method is used to get existing reservations from app (on selected pitch and date)
+     * @param whichPitch is a pitch id from which we are eager to get reservations
+     * @param reservationDate  is a chosen date from which we are eager to get reservations
+     * @throws @PitchNotFoundException
+     * @return list of reservations existing on selected pitch and date as a response from repository
+     */
     @Transactional
     public List<ReservationDto> getReservationByPitchIdAndDate(Integer whichPitch, LocalDate reservationDate) {
         var pitch = pitchRepository.findById(whichPitch).orElseThrow(PitchNotFoundException::new);
@@ -47,6 +64,13 @@ public class ReservationService {
         return reservations.stream().map(this::getReservationDto).collect(Collectors.toList());
     }
 
+
+    /**
+     * method is used to get existing reservations from app (for logged user)
+     * @param whichUser is a user login for whom we are eager to get reservations
+     * @throws @UserNotFoundException
+     * @return list of reservations which current user have as a response from repository
+     */
     @Transactional
     public List<ReservationDto> getReservationByWhichUser(String whichUser) {
         var user = userRepository.findById(whichUser).orElseThrow(UserNotFoundException::new);
@@ -117,6 +141,12 @@ public class ReservationService {
                 .build();
     }
 
+
+    /**
+     * method is used to remove an existing reservation from app
+     * @param reservationId is a reservation id which we are eager to delete from app
+     * @throws @ReservationNotFoundException
+     */
     public void cancelReservation(int reservationId) {
         var reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(ReservationNotFoundException::new);

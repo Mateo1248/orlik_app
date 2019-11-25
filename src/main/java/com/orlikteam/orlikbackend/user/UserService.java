@@ -48,6 +48,7 @@ public class UserService {
      * method is used to get an existing user from app
      * @param userLogin is a login of user who we are eager to get from app
      * @throws @UserNotFoundException
+     * @return user login as response of really existing user given from repository
      */
     public String getUser(String userLogin) {
         Optional<User> user = userRepository.findById(userLogin);
@@ -58,7 +59,7 @@ public class UserService {
 
     /**
      * method is used to update an existing user (his password) in app
-     * @param userDto is a object made from given by user login and new password (which is encoded)
+     * @param userDto is an object made from given by user login and new password (which is encoded)
      * @throws @UserNotFoundException
      */
     public void updateUser(UserDto userDto) {
