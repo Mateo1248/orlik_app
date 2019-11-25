@@ -1,11 +1,10 @@
 package com.orlikteam.orlikbackend.pitch;
 
 import com.orlikteam.orlikbackend.pitch.exception.PitchNotFoundException;
+import com.orlikteam.orlikbackend.reservation.Reservation;
 import org.springframework.stereotype.Service;
-import com.orlikteam.orlikbackend.reservation.ReservationRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,11 +13,9 @@ import java.util.TreeMap;
 public class PitchService {
 
     private final PitchRepository pitchRepository;
-    private final ReservationRepository reservationRepository;
 
-    public PitchService(PitchRepository pitchRepository, ReservationRepository reservationRepository) {
+    public PitchService(PitchRepository pitchRepository) {
         this.pitchRepository = pitchRepository;
-        this.reservationRepository = reservationRepository;
     }
 
 
@@ -46,16 +43,15 @@ public class PitchService {
         Map<Double, Pitch> distancePitch = new TreeMap<>();
 
         for(Pitch pitch : pitches) {
-            Double distancet = countDistanceByCoordinates(userLatitude, userLongtitude, pitch.getLatitude(), pitch.getLongitude());
-
-            distancePitch.put(distancet, pitch);
+            Double distance = countDistanceByCoordinates(userLatitude, userLongtitude, pitch.getLatitude(), pitch.getLongitude());
+            distancePitch.put(distance, pitch);
         }
 
         PitchResponseDto nearest = null;
 
-        for (Iterator key = distancePitch.keySet().iterator(); key.hasNext();) {
-            if(pitchIsAvailableNow(distancePitch.get(key))) {
-                nearest = buildPitchResponseDto(distancePitch.get(key));
+        for (Map.Entry<Double, Pitch> entry : distancePitch.entrySet()) {
+            if(pitchIsAvailableNow(entry.getValue())) {
+                nearest = buildPitchResponseDto(entry.getValue());
                 break;
             }
         }
@@ -86,11 +82,19 @@ public class PitchService {
     }
 
     private boolean pitchIsAvailableNow(Pitch pitch) {
-        return !reservationRepository.findAllByWhichPitchAndReservationDateIsAndStartHourBeforeAndEndHourAfter(
-                pitch.getPitchId(),
-                LocalDate.now(),
-                LocalTime.now(),
-                LocalTime.now().plusHours(2))
-                .isEmpty();
+        LocalDate dateNow = LocalDate.now();
+        LocalTime startTime = LocalTime.now();
+        LocalTime endTime = startTime.plusHours(2);
+
+        for(Reservation  reservation : pitch.getReservations()) {
+            if( reservation.getReservationDate().compareTo(dateNow) == 0 && (
+                         (reservation.getStartHour().compareTo(startTime) > 0 && reservation.getStartHour().compareTo(endTime) < 0) ||
+                         (reservation.getEndHour().compareTo(startTime) > 0 && reservation.getEndHour().compareTo(endTime) < 0) ||
+                         (reservation.getStartHour().compareTo(startTime) < 0 && reservation.getEndHour().compareTo(endTime) > 0))
+                    ) {
+                return false;
+            }
+        }
+        return true;
     }
 }
