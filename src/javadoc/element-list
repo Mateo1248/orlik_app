@@ -1,0 +1,16 @@
+com.orlikteam.orlikbackend
+com.orlikteam.orlikbackend.pitch
+com.orlikteam.orlikbackend.pitch.exception
+com.orlikteam.orlikbackend.rating.dto
+com.orlikteam.orlikbackend.rating.entity
+com.orlikteam.orlikbackend.rating.exception
+com.orlikteam.orlikbackend.rating.repository
+com.orlikteam.orlikbackend.rating.resource
+com.orlikteam.orlikbackend.rating.service
+com.orlikteam.orlikbackend.reservation
+com.orlikteam.orlikbackend.reservation.exception
+com.orlikteam.orlikbackend.security
+com.orlikteam.orlikbackend.security.config
+com.orlikteam.orlikbackend.security.filter
+com.orlikteam.orlikbackend.user
+com.orlikteam.orlikbackend.user.exception
