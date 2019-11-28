@@ -16,6 +16,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+
+    /**
+     * method is used to add a new user to app
+     * @param userDto is a object made from given by user login and password (which is encoded)
+     * @throws @UserAlreadyExistsException
+     * @return user login as a response of properly added user given from repository
+     */
     public UserLoginDto addUser(UserDto userDto) {
         Optional<User> maybeUser = userRepository.findById(userDto.getUserLogin());
         if(maybeUser.isPresent())
@@ -24,6 +31,12 @@ public class UserService {
         return getUserResponseDtoOf(userRepository.save(user).getUserLogin());
     }
 
+
+    /**
+     * method is used to remove an existing user from app
+     * @param userLogin is a login of user who we are eager to delete from app
+     * @throws @UserNotFoundException
+     */
     public void removeUser(String userLogin) {
         Optional<User> user = userRepository.findById(userLogin);
         if (user.isEmpty())
@@ -31,6 +44,12 @@ public class UserService {
         userRepository.deleteById(userLogin);
     }
 
+    /**
+     * method is used to get an existing user from app
+     * @param userLogin is a login of user who we are eager to get from app
+     * @throws @UserNotFoundException
+     * @return user login as response of really existing user given from repository
+     */
     public String getUser(String userLogin) {
         Optional<User> user = userRepository.findById(userLogin);
         if (user.isEmpty())
@@ -38,6 +57,11 @@ public class UserService {
         return user.get().getUserLogin();
     }
 
+    /**
+     * method is used to update an existing user (his password) in app
+     * @param userDto is an object made from given by user login and new password (which is encoded)
+     * @throws @UserNotFoundException
+     */
     public void updateUser(UserDto userDto) {
         Optional<User> user = userRepository.findById(userDto.getUserLogin());
         if (user.isEmpty())

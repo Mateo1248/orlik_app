@@ -16,12 +16,23 @@ public class PitchResource {
         this.pitchService = pitchService;
     }
 
+
+    /**
+     * method receives request for pitch creation, redirects the request to pitch service
+     * @param pitch is an object made from: name, latitude and longitude
+     * @return id and name of already added pitch got from service
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PitchResponseDto addPitch(@RequestBody @Valid Pitch pitch) {
         return pitchService.addPitch(pitch);
     }
 
+
+    /**
+     * method receives request for getting pitches, redirects the request to pitch service
+     * @return list of all existing pitches got from service
+     */
     @GetMapping
     public List<Pitch> getAllPitches() {
         return pitchService.getAllPitches();
