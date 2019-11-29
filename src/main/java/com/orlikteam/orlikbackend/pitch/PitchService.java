@@ -23,7 +23,7 @@ public class PitchService {
         return buildPitchResponseDto(createdPitch);
     }
 
-    public PitchResponseDto getNearestPitch(Double userLatitude, Double userLongtitude) {
+    public PitchResponseDto getNearestPitch(Double userLatitude, Double userLongitude) {
         List<Pitch> pitches = pitchRepository.findAll();
 
         if (pitches.size() == 0)
@@ -32,7 +32,7 @@ public class PitchService {
         Map<Double, Pitch> distancePitch = new TreeMap<>();
 
         for(Pitch pitch : pitches) {
-            Double distance = countDistanceByCoordinates(userLatitude, userLongtitude, pitch.getLatitude(), pitch.getLongitude());
+            Double distance = countDistanceByCoordinates(userLatitude, userLongitude, pitch.getLatitude(), pitch.getLongitude());
             distancePitch.put(distance, pitch);
         }
 
@@ -63,10 +63,10 @@ public class PitchService {
                 .build();
     }
 
-    private Double countDistanceByCoordinates(Double userLatitude, Double userLongtitude, Double pitchLatitude, Double pitchLongtitude) {
+    private Double countDistanceByCoordinates(Double userLatitude, Double userLongitude, Double pitchLatitude, Double pitchLongitude) {
         return Math.sqrt(
                 Math.pow((pitchLatitude - userLatitude), 2) +
-                Math.pow((Math.cos((userLatitude*Math.PI)/180) *(pitchLongtitude - userLongtitude) ), 2)) *
+                Math.pow((Math.cos((userLatitude*Math.PI)/180) *(pitchLongitude - userLongitude) ), 2)) *
                 (40075.704 / 360);
     }
 
