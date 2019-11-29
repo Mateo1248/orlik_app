@@ -7,6 +7,7 @@ import com.orlikteam.orlikbackend.pitch.PitchRepository
 import com.orlikteam.orlikbackend.reservation.Reservation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -113,8 +114,8 @@ class PitchResourceSpec extends Specification {
     def "should return 200 when getting nearest pitch"() {
         given:
         pitchRepository.deleteAll()
-        Pitch pitch1 = new Pitch(1, "Dembowskiego", 40.0, 50.0, new ArrayList<Reservation>())
-        Pitch pitch2 = new Pitch(2, "Spoldzielcza", 50.0, 60.0, new ArrayList<Reservation>())
+        Pitch pitch1 = getNewPitch("Dembowskiego", 40, 50)
+        Pitch pitch2 = getNewPitch("Spoldzielcza", 50, 60)
         pitchRepository.save(pitch1)
         pitchRepository.save(pitch2)
 
