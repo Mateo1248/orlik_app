@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "uminski/orlik:orlik-backend-1.1.1"
+    "Name": "uminski/orlik:orlik-backend-1.2.0"
   },
   "Ports": [
     {

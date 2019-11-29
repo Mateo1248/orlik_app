@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ContextConfiguration
 @WebAppConfiguration
+@DirtiesContext
 class PitchResourceSpec extends Specification {
     @Autowired
     private WebApplicationContext context

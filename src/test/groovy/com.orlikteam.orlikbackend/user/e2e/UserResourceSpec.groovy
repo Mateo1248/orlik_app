@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ContextConfiguration
 @WebAppConfiguration
+@DirtiesContext
 class UserResourceSpec extends Specification {
 
     private static final String TEST_LOGIN = "test@example.com"

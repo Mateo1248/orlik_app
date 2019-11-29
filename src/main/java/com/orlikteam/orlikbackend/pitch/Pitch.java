@@ -1,5 +1,6 @@
 package com.orlikteam.orlikbackend.pitch;
 
+import com.orlikteam.orlikbackend.rating.entity.Rating;
 import com.orlikteam.orlikbackend.reservation.Reservation;
 import lombok.*;
 
@@ -36,4 +37,9 @@ public class Pitch {
     @Transient
     @OneToMany(mappedBy = "which_pitch")
     private List<Reservation> reservations;
+
+    @Transient
+    @OneToMany(mappedBy = "pitch_id")
+    private List<Rating> ratings;
+
 }

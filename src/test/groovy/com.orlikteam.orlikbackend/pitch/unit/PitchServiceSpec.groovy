@@ -10,12 +10,14 @@ import com.orlikteam.orlikbackend.reservation.ReservationRepository
 import com.orlikteam.orlikbackend.user.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
 import spock.lang.Specification
 
 import java.time.LocalDate
 import java.time.LocalTime
 
 @SpringBootTest
+@DirtiesContext
 class PitchServiceSpec extends Specification {
 
     private static final Double USER_LATITUDE = 20.5
