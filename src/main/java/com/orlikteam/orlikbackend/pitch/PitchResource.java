@@ -37,4 +37,9 @@ public class PitchResource {
     public List<Pitch> getAllPitches() {
         return pitchService.getAllPitches();
     }
+
+    @GetMapping("/nearest/{latitude}/{longitude}")
+    public PitchResponseDto getNearestPitch(@PathVariable("latitude") Double latitude, @PathVariable("longitude") Double longitude) {
+        return pitchService.getNearestPitch(latitude, longitude);
+    }
 }
