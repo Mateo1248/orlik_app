@@ -38,6 +38,13 @@ public class PitchResource {
         return pitchService.getAllPitches();
     }
 
+
+    /**
+     * method receives request for getting the nearest, available pitch, redirects the request to pitch service
+     * @param latitude is latitude taken from user's localization
+     * @param longitude is longitude taken from user's localization
+     * @return id and name of already found pitch which is available and the nearest to the user's localization (from all pitches)
+     */
     @GetMapping("/nearest/{latitude}/{longitude}")
     public PitchResponseDto getNearestPitch(@PathVariable("latitude") Double latitude, @PathVariable("longitude") Double longitude) {
         return pitchService.getNearestPitch(latitude, longitude);
