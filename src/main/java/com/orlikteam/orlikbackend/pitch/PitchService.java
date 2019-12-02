@@ -31,8 +31,10 @@ public class PitchService {
 
 
     /**
-     * method is used to get existing pitches from app
-     * @return list of all existing pitches as a response given from repository
+     * method is used to get the closest and currently available pitch from app
+     * @param userLatitude is latitude taken from user's localization
+     * @param userLongtitude is longitude taken from user's localization
+     * @return id and name of already found pitch which is available and the nearest to the user's localization (from all pitches) given from repository
      */
     public PitchResponseDto getNearestPitch(Double userLatitude, Double userLongtitude) {
         List<Pitch> pitches = pitchRepository.findAll();
@@ -62,6 +64,10 @@ public class PitchService {
         return nearest;
     }
 
+    /**
+     * method is used to get existing pitches from app
+     * @return list of all existing pitches as a response given from repository
+     */
     public List<Pitch> getAllPitches() {
         return pitchRepository.findAll();
     }
