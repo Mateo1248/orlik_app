@@ -6,15 +6,9 @@ import com.orlikteam.orlikbackend.pitch.PitchResponseDto
 import com.orlikteam.orlikbackend.pitch.PitchService
 import com.orlikteam.orlikbackend.pitch.exception.PitchNotFoundException
 import com.orlikteam.orlikbackend.reservation.Reservation
-import com.orlikteam.orlikbackend.reservation.ReservationRepository
-import com.orlikteam.orlikbackend.user.User
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
 import spock.lang.Specification
-
-import java.time.LocalDate
-import java.time.LocalTime
 
 @SpringBootTest
 @DirtiesContext
@@ -82,26 +76,6 @@ class PitchServiceSpec extends Specification {
         pitch.getPitchId() == 2
     }
 
-    def "should return second nearest pitch, first is unavailable"() {
-        given: "list of pitches contains two pitches, the nearest is unavailable"
-        def pitch1 = buildPitch(1, "pitch1", USER_LATITUDE + 10.0, USER_LONGTITUDE + 10.0, new ArrayList())
-
-        List<Reservation> pitch2Reservation = new ArrayList<>()
-        pitch2Reservation.add(buildReservation(LocalDate.now(), LocalTime.now().plusHours(1), LocalTime.now().plusHours(2)))
-        def pitch2 = buildPitch(2, "pitch2", USER_LATITUDE+2.022, USER_LONGTITUDE+2.0, pitch2Reservation)
-        pitchRepository. findAll() >> List.of(pitch1, pitch2)
-
-        when: "get nearest pitch"
-        PitchResponseDto pitch = pitchService.getNearestPitch(USER_LATITUDE, USER_LONGTITUDE)
-
-        then: "return second nearest pitch"
-        pitchRepository.findAll().size() == 2
-        pitch.getPitchId() == 1
-    }
-
-
-
-
     private static Pitch buildPitch(Integer id, String name, Double latitude, Double longitude, List<Reservation> reservations) {
         return Pitch
                 .builder()
@@ -110,15 +84,6 @@ class PitchServiceSpec extends Specification {
                 .latitude(latitude)
                 .longitude(longitude)
                 .reservations(reservations)
-                .build()
-    }
-
-    private static Reservation buildReservation(LocalDate date, LocalTime startHour, LocalTime endHour) {
-        return Reservation
-                .builder()
-                .reservationDate(date)
-                .startHour(startHour)
-                .endHour(endHour)
                 .build()
     }
 }

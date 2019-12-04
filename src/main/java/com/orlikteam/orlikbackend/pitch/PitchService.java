@@ -8,6 +8,7 @@ import java.time.*;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 @Service
 public class PitchService {
@@ -49,19 +50,14 @@ public class PitchService {
             distancePitch.put(distance, pitch);
         }
 
-        PitchResponseDto nearest = null;
+        var pitch = distancePitch
+                .entrySet()
+                .stream()
+                .findFirst()
+                .orElseThrow(PitchNotFoundException::new)
+                .getValue();
 
-        for (Map.Entry<Double, Pitch> entry : distancePitch.entrySet()) {
-            if(pitchIsAvailableNow(entry.getValue())) {
-                nearest = buildPitchResponseDto(entry.getValue());
-                break;
-            }
-        }
-
-        if(nearest == null)
-            throw new PitchNotFoundException();
-
-        return nearest;
+        return buildPitchResponseDto(pitch);
     }
 
     /**
@@ -85,27 +81,5 @@ public class PitchService {
                 Math.pow((pitchLatitude - userLatitude), 2) +
                 Math.pow((Math.cos((userLatitude*Math.PI)/180) *(pitchLongtitude - userLongtitude) ), 2)) *
                 (40075.704 / 360);
-    }
-
-    private boolean pitchIsAvailableNow(Pitch pitch) {
-        if(pitch.getReservations() == null)
-            return true;
-
-        ZoneId zoneId = ZoneId.of("Europe/Paris");
-
-        LocalDate dateNow = LocalDate.now(zoneId);
-        LocalTime startTime = LocalTime.now(zoneId);
-        LocalTime endTime = startTime.plusHours(2);
-
-        for(Reservation  reservation : pitch.getReservations()) {
-            if( reservation.getReservationDate().compareTo(dateNow) == 0 && (
-                         (reservation.getStartHour().compareTo(startTime) > 0 && reservation.getStartHour().compareTo(endTime) < 0) ||
-                         (reservation.getEndHour().compareTo(startTime) > 0 && reservation.getEndHour().compareTo(endTime) < 0) ||
-                         (reservation.getStartHour().compareTo(startTime) < 0 && reservation.getEndHour().compareTo(endTime) > 0))
-                    ) {
-                return false;
-            }
-        }
-        return true;
     }
 }
